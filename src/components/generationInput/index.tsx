@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import TextareaAutosize from "react-autosize-textarea";
-import { useSearchParams } from "next/navigation";
 import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
 import SparklesIcon from "@heroicons/react/24/outline/SparklesIcon";
 import { AdvancedModelSelection } from "./advancedFeaturesInput";
@@ -42,14 +41,16 @@ function DarkIconButton({
   </button>;
 }
 
-export function GenerationInput() {
-  const searchParams = useSearchParams();
-
+export function GenerationInput({
+  searchParams
+}: {
+  searchParams: Record<string, string>
+}) {
   const ref = useRef<HTMLTextAreaElement>(null);
   // const [ minFoundHeight, setMinFoundHeight ] = useState(1000);
   // const [ isMultiline, setIsMultiline ] = useState(false);
 
-  const defaultModelDetails = searchParams.get("modelDetails");
+  const defaultModelDetails = searchParams["modelDetails"];
   const [ modelDetails, setModelDetails ] = useState<GenerateImageRequest["modelDetails"]>(defaultModelDetails ? JSON.parse(defaultModelDetails) : {
     model: "dall-e-3",
     quality: "standard",
@@ -77,7 +78,7 @@ export function GenerationInput() {
           //     setIsMultiline(ref.current.clientHeight > minFoundHeight);
           //   }
           // }}
-          defaultValue={searchParams.get("prompt") || ""}
+          defaultValue={searchParams["prompt"] || ""}
           rows={1}
           maxRows={4}
           className="flex-grow disabled:opacity-80 text-white text-sm bg-transparent border-0 shadow-none resize-none outline-none ring-0 disabled:bg-transparent placeholder:text-zinc-400 [scroll-padding-block:0.75rem] pr-2 leading-relaxed py-3 pl-1 [&_textarea]:px-0"
