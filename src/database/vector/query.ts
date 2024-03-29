@@ -23,7 +23,7 @@ export async function queryRelatedImages(prompt: string, aiPaySessionId?: string
 
   return await index.query({
     vector,
-    topK: 25,
+    topK: 35,
     includeMetadata: true,
   });
 }

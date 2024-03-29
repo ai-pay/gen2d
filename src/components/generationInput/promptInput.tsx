@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useSessionData } from "ai-pay-react-hooks";
 import { AiPayPrompts } from "./aiPayPrompts";
+import toast from "react-hot-toast";
+import { useDisplayImageIdsStore } from "@/store/displayImageIds";
 
 function DarkIconButton({
   children,
@@ -28,25 +30,22 @@ function DarkIconButton({
 }) {
   return <TooltipProvider delayDuration={50}>
     <Tooltip>
-      <TooltipTrigger>
-        <button
-          className={`
-            relative
-            text-neutral-100
-            w-10 h-10
-            flex items-center justify-around
-            rounded-md
-            hover:bg-neutral-700 transition-colors
-            ${loading ? "bg-neutral-700 cursor-not-allowed animate-pulse" : ""}
-            ${disabled ? "cursor-not-allowed bg-neutral-700/50 text-neutral-100/50" : "cursor-pointer"}
-            `}
-          onClick={() => {
-            if (loading || disabled) return;
-            onClick();
-          }}
-        >
-          {children}   
-        </button>
+      <TooltipTrigger 
+        className={`
+        relative
+        text-neutral-100
+        w-10 h-10
+        flex items-center justify-around
+        rounded-md
+        hover:bg-neutral-700 transition-colors
+        ${loading ? "bg-neutral-700 cursor-not-allowed animate-pulse" : ""}
+        ${disabled ? "cursor-not-allowed bg-neutral-700/50 text-neutral-100/50" : "cursor-pointer"}
+        `}
+        onClick={() => {
+          if (loading || disabled) return;
+          onClick();
+        }}>
+        {children}   
       </TooltipTrigger>
       <TooltipContent>
         {tooltip}
@@ -67,6 +66,8 @@ export function GeneratePromptInput({
     children: React.ReactNode;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
+
+  const setQuery = useDisplayImageIdsStore((state) => state.setQueryType);
 
   const {
     browserExtensionInstalled,
@@ -111,7 +112,6 @@ export function GeneratePromptInput({
                 Learn how to start a session
               </a>.
             </>}
-            
           </p>
         ) : "Generate image"}
         onClick={() => {
@@ -123,9 +123,18 @@ export function GeneratePromptInput({
 
       <DarkIconButton
         loading={false}
-        tooltip="Search the dataset for similar prompts"
+        tooltip="Search for similar prompts"
         onClick={() => {
-          throw new Error("not implemented yet");
+          const text = ref.current?.value || "";
+          if (text === "") {
+            toast.error("Please enter a prompt to search for.");
+            return;
+          }
+
+          setQuery({
+            type: "prompt",
+            prompt: text,
+          });
         }}
       >
         <MagnifyingGlassIcon className="h-5 w-5" />

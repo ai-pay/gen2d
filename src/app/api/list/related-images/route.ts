@@ -19,11 +19,15 @@ export const POST = async function (req: NextRequest) {
 
   const { prompt, aiPaySessionId } = parseResult.data;
 
-  const imageIds = await queryRelatedImages(prompt, aiPaySessionId);
+  const images = await queryRelatedImages(prompt, aiPaySessionId);
 
-  return new NextResponse(JSON.stringify({ 
-    imageIds
-  }), {
+  const response: {
+    imageIds: string[];
+  } = {
+    imageIds: images?.map((image) => String(image.id)) || []
+  };
+
+  return new NextResponse(JSON.stringify(response), {
     status: 200,
     headers: {
       "Content-Type": "application/json",

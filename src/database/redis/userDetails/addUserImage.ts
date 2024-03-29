@@ -12,6 +12,6 @@ export async function addUserImage(userId: string, imageId: string, client: Clie
       profileImageId: ""
     });
   } else {
-    await client.json.set(userDetailsKeyGen(userId), "$.imageIds", [...userDetails.imageIds, imageId]);
+    await client.json.arrappend(userDetailsKeyGen(userId), "$.imageIds", `"${imageId}"`);
   }
 }

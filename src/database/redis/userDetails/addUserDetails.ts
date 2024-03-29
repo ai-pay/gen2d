@@ -7,4 +7,8 @@ export async function addUserDetails(userId: string, userDetails: Omit<UserDetai
     ...userDetails, 
     createdAt: Date.now()
   });
+  return {
+    ...userDetails, 
+    createdAt: Date.now()
+  };
 }

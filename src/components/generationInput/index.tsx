@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { AdvancedModelSelection } from "./advancedFeaturesInput/index";
-import { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
 import { GenerateImageRequest } from "../../types/generateImageRequest";
@@ -30,7 +29,6 @@ export function GenerationInput({
   } = useGenerateImage();
 
   return <div className="flex py-[10vh] my-12 justify-center items-center">
-    <Toaster />
     <div className="relative flex flex-col gap-3 justify-center w-[80vw] sm:w-[512px]">
       
       <GeneratePromptInput 
@@ -41,7 +39,6 @@ export function GenerationInput({
         } } >
         <AdvancedModelSelection modelDetails={modelDetails} setModelDetails={setModelDetails} />
       </GeneratePromptInput>
-      
 
       {imageResponse && <Link 
         href={"/img/" + imageResponse.imageId}

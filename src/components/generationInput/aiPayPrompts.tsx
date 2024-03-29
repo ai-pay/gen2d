@@ -1,3 +1,5 @@
+"use client";
+
 import { SessionStatus } from "ai-pay";
 
 export function AiPayPrompts({
@@ -9,6 +11,7 @@ export function AiPayPrompts({
     sessionState: SessionStatus;
     children: React.ReactNode;
 }) {
+
   if (!browserExtensionInstalled) {
     return <p className="w-full text-neutral-600 text-sm">
       Generating images requires <a 
@@ -31,7 +34,12 @@ export function AiPayPrompts({
 
   if (sessionState !== "ACTIVE") {
     return <p className="w-full text-neutral-600 text-sm">
-      Generating images requires an AI Pay session. Start a session using the AI Pay browser extension or <a href="https://www.joinaipay.com/welcome" className="text-blue-500 hover:underline">
+      Generating images requires an AI Pay session. Start a session using the AI Pay browser extension or <a 
+        href="https://www.joinaipay.com/welcome" 
+        className="text-blue-500 hover:underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         learn how to start a session
       </a>.
     </p>;
