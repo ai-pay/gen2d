@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "yarn add sharp --ignore-engines; next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint --fix"
   },
@@ -37,7 +37,6 @@
     "next-auth": "^4.24.7",
     "openai": "^4.29.2",
     "react": "^18",
-    "react-autosize-textarea": "^7.1.0",
     "react-dom": "^18",
     "react-hook-form": "^7.51.1",
     "react-hot-toast": "^2.4.1",

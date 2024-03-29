@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import TextareaAutosize from "react-autosize-textarea";
+import TextareaAutosize from "react-textarea-autosize";
 import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
 import SparklesIcon from "@heroicons/react/24/outline/SparklesIcon";
 import { AdvancedModelSelection } from "./advancedFeaturesInput";
@@ -86,8 +86,6 @@ export function GenerationInput({
           placeholder="Enter your prompt here..."
           autoFocus
           ref={ref} 
-          onPointerEnterCapture={undefined} 
-          onPointerLeaveCapture={undefined}      
         />
 
         <DarkIconButton
