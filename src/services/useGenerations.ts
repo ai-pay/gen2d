@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useQuery } from "react-query";
 
 export const fetchRecentImagesIds = async () => {
@@ -22,6 +23,12 @@ export function useGenerations(initialImageIds: string[] = []) {
     imageIds,
     status,
     error,
-    reloadImages: refetch
+    reloadImages: () => {
+      const toastId = toast.loading("Reloading images...");
+      refetch()
+        .finally(() => {
+          toast.success("Images reloaded.", { id: toastId });
+        });
+    }
   };
 }

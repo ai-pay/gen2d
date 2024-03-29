@@ -40,9 +40,6 @@ export function useGenerateImage() {
 
     const toastId = toast.loading("Generating image...");
     try {
-      console.log({ request });
-
-
       const response = await fetch("/api/generate/image", {
         method: "POST",
         headers: {
@@ -53,12 +50,11 @@ export function useGenerateImage() {
 
       if (response.ok) {
         const data = await response.json() as GenerateImagesResponseBody;
-        toast.remove(toastId);
-
 
         toast.success("Successfully generated image.", {
           duration: 5000,
           icon: "🔥",
+          id: toastId,
         });
 
         setImageResponse({
@@ -68,13 +64,15 @@ export function useGenerateImage() {
         });
       } else {
         const data = await response.json() as { error: string };
-        toast.remove(toastId);
 
-        toast.error(`Failed to generate image with error: ${data.error}`);
+        toast.error(`Failed to generate image with error: ${data.error}`, {
+          id: toastId,
+        });
       }
     } catch {
-      toast.remove(toastId);
-      toast.error("Failed to generate image.");
+      toast.error("Failed to generate image.", {
+        id: toastId,
+      });
     }
 
     setLoading(false);

@@ -15,7 +15,7 @@ export function DisplayImagesHeader({
   refreshImages: () => void;
 }) {
   return <div className="flex items-center justify-start gap-3">
-    <Tabs defaultValue={defaultValue} className="" onValueChange={onValueChange as ((val: string) => void)}>
+    <Tabs value={defaultValue} className="" onValueChange={onValueChange as ((val: string) => void)}>
       <TabsList>
         {imageDisplayOptions.map((option) => 
           <TabsTrigger key={option} value={option}>{option}</TabsTrigger>

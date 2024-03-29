@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: { imageId: string }
   return {
     title: "Image Details",
     description: `AI Generated Image, Prompt: ${imageDetails.prompt}`,
-    // TOOD: Add image for when you send the link to social media
+    // TODO: Add image for when you send the link to social media
   };
 }
 

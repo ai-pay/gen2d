@@ -10,6 +10,7 @@ import {
 
 export const imageDisplayOptions = [
   "Recent Generations",
+  "Popular Generations (coming soon)",
 ] as const; 
 
 export type ImageDisplayOption = typeof imageDisplayOptions[number];

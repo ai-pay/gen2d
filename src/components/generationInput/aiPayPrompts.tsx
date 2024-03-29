@@ -18,14 +18,14 @@ export function AiPayPrompts({
         rel="noopener noreferrer"
       >
         AI Pay
-      </a>. AI Pay is a browser extension that allows users to pay for their individual AI usage, to facilitate AI services (like this one). <a 
+      </a>. AI Pay is a browser extension that allows users to pay for their individual AI usage, no subscriptions, only pay for what you use. <a 
         href="https://chromewebstore.google.com/detail/ai-pay/igghgdjfklipjmgldcdfnpppgaijmhfg" 
         className="text-blue-500 hover:underline"
         target="_blank"
         rel="noopener noreferrer"
       >
         Get started for free
-      </a>. (Note: reload the page when you download the extension)
+      </a> (reload the page after downloading the extension).
     </p>;
   }
 

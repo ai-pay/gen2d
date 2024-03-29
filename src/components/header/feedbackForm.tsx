@@ -1,8 +1,7 @@
 "use client";
 
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { useState } from "react";
 import { FeedbackForm, feedbackFrom } from "../../types/feedback";
 import { Button } from "../ui/button";
@@ -13,7 +12,6 @@ import { Input } from "../ui/input";
 export function FeedbackFormButton() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // 1. Define your form.
   const form = useForm<FeedbackForm>({
     resolver: zodResolver(feedbackFrom),
     defaultValues: {
@@ -41,7 +39,7 @@ export function FeedbackFormButton() {
         <DialogHeader>
           <DialogTitle>Feedback</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
+        <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
@@ -60,7 +58,7 @@ export function FeedbackFormButton() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email (optional)</FormLabel>
                   <FormControl>
                     <Input placeholder="john@example.com" {...field} />
                   </FormControl>
@@ -72,7 +70,7 @@ export function FeedbackFormButton() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Name (optional)</FormLabel>
                   <FormControl>
                     <Input placeholder="John" {...field} />
                   </FormControl>
@@ -83,7 +81,7 @@ export function FeedbackFormButton() {
               <Button type="submit">Submit Feedback</Button>
             </DialogFooter>
           </form>
-        </Form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );
