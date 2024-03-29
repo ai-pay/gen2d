@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: { params: { imageId: string }
     title: "Image Details",
     description: `AI Generated Image, Prompt: ${imageDetails?.prompt}`,
     openGraph: {
-      title: "GEN2D Image",
+      title: "GEN2D - AI Image Generation",
       description: `GEN2D, Prompt: ${imageDetails?.prompt}`,
       url: `https://www.gen2d.dev/img/${params.imageId}`,
       type: "website",
