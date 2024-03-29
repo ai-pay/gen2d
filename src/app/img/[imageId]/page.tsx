@@ -4,7 +4,19 @@ import { fetchImageDetails } from "@/database/redis/imageDetails/fetchImageDetai
 import Image from "next/image";
 import DocumentDuplicateIcon from "@heroicons/react/24/outline/DocumentDuplicateIcon";
 import ShareIcon from "@heroicons/react/24/outline/ShareIcon";
+import { Metadata } from "next";
 
+
+export async function generateMetadata({ params }: { params: { imageId: string } }): Promise<Metadata> {
+
+  const imageDetails = await fetchImageDetails(params.imageId);
+ 
+  return {
+    title: "Image Details",
+    description: `AI Generated Image, Prompt: ${imageDetails.prompt}`,
+    // TOOD: Add image for when you send the link to social media
+  };
+}
 
 export default async function Home({ params }: { params: { imageId: string } }) {
   const imageUrl = generateImageUrl(params.imageId, "1024");
