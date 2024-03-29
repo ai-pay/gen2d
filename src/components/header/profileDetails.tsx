@@ -16,6 +16,8 @@ function ProfileDetailsContents() {
 
   const profileImageId = useUserSettingsStore((state) => state.profileImageId);
 
+  const recentImageIds = user?.imageIds?.toReversed();
+
   return <Sheet>
     <SheetTrigger className="
   inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300
@@ -46,14 +48,14 @@ function ProfileDetailsContents() {
           {user.status === "authenticated" ? "Logout" : "Sign Up"}
         </Button>
 
-        {user.status === "authenticated" && user.profileImageId && <>
+        {profileImageId && <>
           <SheetTitle>Profile Icon</SheetTitle>
           <Link 
-            href={`/img/${user.profileImageId}`}
+            href={`/img/${profileImageId}`}
             className="overflow-hidden rounded-md"
           >
             <Image 
-              src={generateImageUrl(user.profileImageId, "512")} 
+              src={generateImageUrl(profileImageId, "512")} 
               alt="Profile Icon"
               width={512}
               height={512}
@@ -64,7 +66,7 @@ function ProfileDetailsContents() {
         <SheetTitle>Recently Generated Images</SheetTitle>
 
         <div className="grid grid-cols-2 gap-3">
-          {user && user.imageIds && user.imageIds.toReversed().map((imageId) => (
+          {recentImageIds && recentImageIds.length && recentImageIds.map((imageId) => (
             <Link 
               key={imageId}
               href={`/img/${imageId}`}
@@ -78,6 +80,21 @@ function ProfileDetailsContents() {
               />
             </Link>
           ))}
+
+          {recentImageIds && !recentImageIds.length && (
+            <SheetDescription>
+              You haven&apos;t generated any images yet.
+            </SheetDescription> 
+          )}
+
+
+          {!recentImageIds && (
+            <SheetDescription>
+              Loading...
+            </SheetDescription>
+          )}
+
+
 
           {!user && (
             <SheetDescription>
