@@ -10,7 +10,7 @@ export default function Home({
   return <>
     <MainHeader />
     <main className="flex min-h-screen flex-col items-center justify-between">
-      <GenerationInput searchParams={searchParams} />
+      <GenerationInput defaultModelDetails={searchParams["modelDetails"]} defaultPrompt={searchParams["prompt"]} />
       <DisplayImages />
     </main>
   </>;
