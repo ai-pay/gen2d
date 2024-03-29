@@ -1,7 +1,7 @@
 import { EMBEDDING_MODEL, index } from "./client";
 import OpenAI from "openai";
 
-export async function Query(prompt: string, aiPaySessionId?: string) {
+export async function queryRelatedImages(prompt: string, aiPaySessionId?: string) {
     
   const client = new OpenAI(aiPaySessionId ? {
     apiKey: aiPaySessionId,

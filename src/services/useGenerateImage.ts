@@ -1,20 +1,24 @@
 import { GenerateImageRequest } from "@/types/generateImageRequest";
 import { useState } from "react";
 import { useSessionId } from "ai-pay-react-hooks";
+import toast from "react-hot-toast";
+import { GenerateImagesResponseBody } from "@/app/api/generate/image/route";
 
 export function useGenerateImage() {
   const sessionId = useSessionId();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [image, setImage] = useState<string | null>(null);
-  const [imagePrompt, setImagePrompt] = useState<string | null>(null);
+  const [imageResponse, setImageResponse] = useState<{
+    imageId: string;
+    imageUrl: string;
+    prompt: string;
+  } | null>(null);
 
   const generateImage = async (
     modelDetails: GenerateImageRequest["modelDetails"], 
     prompt: string
   ) => {
     if (!sessionId) {
-      setError("Session ID not found. Start an AI Pay session first to generate images.");
+      toast.error("Session ID not found. Start an AI Pay session first to generate images.");
       return;
     }
 
@@ -22,7 +26,7 @@ export function useGenerateImage() {
       return;
     }
     if (prompt === "") {
-      setError("Enter a prompt.");
+      toast.error("Enter a valid prompt.");
       return;
     }
 
@@ -33,10 +37,11 @@ export function useGenerateImage() {
     };
 
     setLoading(true);
-    setError(null);
 
+    const toastId = toast.loading("Generating image...");
     try {
       console.log({ request });
+
 
       const response = await fetch("/api/generate/image", {
         method: "POST",
@@ -46,19 +51,31 @@ export function useGenerateImage() {
         body: JSON.stringify(request),
       });
 
-      console.log(response);
+      if (response.ok) {
+        const data = await response.json() as GenerateImagesResponseBody;
+        toast.remove(toastId);
 
-      if (!response.ok) {
-        setError("Failed to generate image.");
-      } else {
-        const data = await response.json();
-        console.log(data);
+
+        toast.success("Successfully generated image.", {
+          duration: 5000,
+          icon: "🔥",
+        });
+
         // TODO: type check data
-        setImage(data.imageUrl);
-        setImagePrompt(prompt);
+        setImageResponse({
+          imageId: data.imageId,
+          imageUrl: data.imageUrl,
+          prompt,
+        });
+      } else {
+        const data = await response.json() as { error: string };
+        toast.remove(toastId);
+
+        toast.error(`Failed to generate image with error: ${data.error}`);
       }
     } catch {
-      setError("Failed to generate image.");
+      toast.remove(toastId);
+      toast.error("Failed to generate image.");
     }
 
     setLoading(false);
@@ -66,9 +83,7 @@ export function useGenerateImage() {
 
   return {
     loading,
-    error,
-    image,
-    imagePrompt,
+    imageResponse,
     generateImage,
   };
 }

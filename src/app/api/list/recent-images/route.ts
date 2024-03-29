@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
-import { fetchRecentImageIds } from "@/database/redis/recentImageIds/fetctRecentImageIds";
+import { fetchRecentImageIds } from "@/database/redis/recentImageIds/fetchRecentImageIds";
+
+export const runtime = "edge";
 
 export const GET = async function () {
   const imageIds = await fetchRecentImageIds();

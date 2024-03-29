@@ -1,25 +1,56 @@
 
 import axios from "axios";
+import sharp from "sharp";
+import { generateImageUrl, ImageSizeVariant } from "./generateImageUrl";
 
-export async function uploadImage(remotePathToImage: string, imageId: string) {
-  const CLOUDFLARE_API_TOKEN = process.env.CLOUDFLARE_API_TOKEN as string;
-  const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID as string;
 
-  const url = `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/images/v1`;
-  const headers = {
-    "Authorization": `Bearer ${CLOUDFLARE_API_TOKEN}`,
-    "Content-Type": "multipart/form-data"
-  };
-  const formData = new FormData();
-  formData.append("url", remotePathToImage);
-  formData.append("id", imageId);
+const variants: {
+  size: number;
+  variantId: ImageSizeVariant;
+}[] = [
+  {
+    size: 1024,
+    variantId: "1024"
+  },
+  {
+    size: 512,
+    variantId: "512"
+  },
+  {
+    size: 256,
+    variantId: "256"
+  },
+  {
+    size: 128,
+    variantId: "128"
+  },
+  {
+    size: 64,
+    variantId: "64"
+  },
+];
 
-  try {
-    const response = await axios.post(url, formData, { headers });
-    console.log("Image uploaded successfully:", response.data);
-    // Handle response as needed
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    // Handle error as needed
-  }
+export async function uploadImage(imageBuffer: ArrayBufferLike, imageId: string, type: "img" | "icon" = "img") {
+
+  await Promise.all(variants.map(async ({ size, variantId }) => {
+    try {
+      const imageUrl = generateImageUrl(imageId, variantId, type);
+    
+      const resizedImageBuffer = await sharp(imageBuffer)
+        .resize(size, size, { fit: "cover" })
+        .jpeg()
+        .toBuffer();
+
+      const headers = {
+        "Authorization": type === "img" ? process.env.CLOUDFLARE_IMAGE_UPLOAD_API_KEY : process.env.CLOUDFLARE_ICON_UPLOAD_API_KEY,
+        "Content-Type": "image/jpeg",
+      };
+    
+      const response = await axios.post(imageUrl, resizedImageBuffer, { headers });
+      console.log("Image variant uploaded:", response.status, imageUrl);
+    }
+    catch (error) {
+      console.error("Error uploading image variant:", error);
+    }
+  }));
 }

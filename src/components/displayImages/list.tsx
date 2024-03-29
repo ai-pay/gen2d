@@ -12,14 +12,17 @@ export function DisplayImage({
   text?: string;
 }) {
   return <Link 
-    href={imageId ? `/images/${imageId}` : "/"}
+    href={imageId ? `/img/${imageId}` : "/"}
   >
     <div className={cn(
-      "relative aspect-square rounded-lg",
+      "relative aspect-square rounded-lg overflow-hidden bg-neutral-200 shadow-md",
       imageId ? "transition duration-500 hover:scale-110 cursor-pointer" : "",
     )}>
-      <Skeleton className="absolute inset-0" />
+      <Skeleton className="absolute inset-0 -z-10" />
       {imageId && <Image 
+        className="w-full h-full"
+        width={256}
+        height={256}
         alt={`Generated image for id: ${imageId}`}
         src={generateImageUrl(imageId, "256")}
       />}
@@ -53,7 +56,7 @@ export function DisplayImagesList({
         <DisplayImage imageId={imageId} />
       </li>
     ))}
-    {imageIds.length < 50 && Array.from({length: 30 - imageIds.length}).map((_, index) => (
+    {imageIds.length < 25 && Array.from({length: 25 - imageIds.length}).map((_, index) => (
       <li key={index} className="space-y-4 w-full">
         <DisplayImage text="placeholder" />
       </li>

@@ -18,6 +18,7 @@ import { Input } from "../ui/input";
 import { GenerateImageRequest } from "@/types/generateImageRequest";
 
 const options: Record<SupportedImageModel, string> = {
+  "stability-ai-core": "Stability AI Core",
   "dall-e-3": "Dalle-3",
   "dall-e-2": "Dalle-2"
 };
@@ -33,17 +34,27 @@ export function AdvancedModelSelection({
     <AccordionItem className="w-full" value="item-1">
       <div className="w-full flex justify-between gap-3">
         <Select onValueChange={(value: SupportedImageModel) => {
-          if (value === "dall-e-2") {
+          switch (value) {
+          case "stability-ai-core": {
+            setModelDetails({
+              model: "stability-ai-core",
+            });
+            break;
+          }
+          case "dall-e-2": {
             setModelDetails({
               model: "dall-e-2",
             });
+            break;
           }
-          if (value === "dall-e-3") {
+          case "dall-e-3": {
             setModelDetails({
               model: "dall-e-3",
               quality: "standard",
               style: "vivid"
             });
+            break;
+          }
           }
         }}>
           <SelectTrigger className="flex-grow font-medium text-neutral-500 hover:text-neutral-950 transition-all">

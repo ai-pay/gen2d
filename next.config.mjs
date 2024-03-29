@@ -1,12 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    async rewrites() {
-        return [
+    images: {
+        remotePatterns: [
           {
-            source: '/image/:path*', // Matches any path after /image/
-            destination: 'https://img.gen2d.workers.dev/:path*',
+            protocol: 'https',
+            hostname: 'img.gen2d.dev',
+            port: '',
+            pathname: '/**.jpg',
           },
-        ]
+          {
+            protocol: 'https',
+            hostname: 'icon.gen2d.dev',
+            port: '',
+            pathname: '/**.jpg',
+          },
+        ],
       },
 };
 

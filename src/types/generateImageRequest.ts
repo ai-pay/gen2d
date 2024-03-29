@@ -15,6 +15,10 @@ export const generateImageRequest = z.object({
     z.object({
       model: z.enum([supportedImageModels[1]]),
     }),
+    z.object({
+      model: z.enum([supportedImageModels[2]]),
+      negative_prompt: z.optional(z.string()),
+    }),
   ]),
 });
 

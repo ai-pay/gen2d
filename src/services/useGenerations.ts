@@ -1,9 +1,9 @@
 import { useQuery } from "react-query";
 
 const fetchData = async () => {
-  const response = await fetch("/api/list/recentImages");
+  const response = await fetch("/api/list/recent-images");
+  console.log("Called /api/list/recent-images");
   const data = await response.json();
-  console.log({data});
   return data.imageIds as string[];
 };
 

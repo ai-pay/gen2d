@@ -3,6 +3,8 @@ import { submitFeedback } from "@/database/redis/feedback";
 import { feedbackFrom } from "@/types/feedback";
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 export const POST = async function (req: NextRequest) {
 
   const parseResult = feedbackFrom.safeParse(await req.json());

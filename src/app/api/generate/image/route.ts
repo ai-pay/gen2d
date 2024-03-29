@@ -10,6 +10,22 @@ import { addImageDetails } from "@/database/redis/imageDetails/addImageDetails";
 import { addUserImage } from "@/database/redis/userDetails/addUserImage";
 import { redis } from "@/database/redis/redisClient";
 import { upsertImage } from "@/database/vector/upsert";
+import { generateImageUrl, ImageSizeVariant, imageSizeVariants } from "@/database/cloudflare/generateImageUrl";
+import { loadImageBufferFromUrl } from "@/database/cloudflare/loadImageBufferFromUrl";
+
+function base64ToArrayBuffer(base64: string) {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+export type GenerateImagesResponseBody = {
+  imageId: string;
+  imageUrl: string;
+}
 
 export const POST = async function (req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -35,17 +51,32 @@ export const POST = async function (req: NextRequest) {
     session.user.id;
   }
 
-  const imgGenRequest: ImageGenerationRequest = {
-    prompt,
-    size: "1024x1024",
-    ...(modelDetails.model === "dall-e-3" ? {
-      imageModel: modelDetails.model,
-      quality: modelDetails.quality,
-      style: modelDetails.style,
-    } : {
-      imageModel: modelDetails.model,
-    }),
-  };
+  const imgGenRequest: ImageGenerationRequest = (() => {
+    switch (modelDetails.model) {
+    case "stability-ai-core": {
+      return {
+        prompt,
+        imageModel: "stability-ai-core",
+      };
+    }
+    case "dall-e-2": {
+      return {
+        prompt,
+        imageModel: "dall-e-2",
+        size: "1024x1024",
+      };
+    }
+    case "dall-e-3": {
+      return {
+        prompt,
+        imageModel: "dall-e-3",
+        size: "1024x1024",
+        quality: modelDetails.quality,
+        style: modelDetails.style,
+      };
+    }
+    }
+  })();
 
   const {
     data,
@@ -71,10 +102,11 @@ export const POST = async function (req: NextRequest) {
 
   const pipeline = redis.pipeline();
 
-  addImageId(imageId, pipeline);
+  await addImageId(imageId, pipeline);
 
-  addImageDetails(imageId, {
+  await addImageDetails(imageId, {
     createdAt: Date.now(),
+    sizeVariants: imageSizeVariants as unknown as ImageSizeVariant[],
     prompt,
     modelDetails,
     ownerId: session?.user.id,
@@ -83,19 +115,32 @@ export const POST = async function (req: NextRequest) {
   }, pipeline);
 
   if (session?.user.id) {
-    addUserImage(session.user.id, imageId, pipeline);
+    await addUserImage(session.user.id, imageId, pipeline);
   }
 
   // TODO: Promise.all
-  await uploadImage(data.imageUrls[0], imageId);
-  await pipeline.exec();
+  if ("imageUrls" in data) {
+    const imageBuffer = await loadImageBufferFromUrl(data.imageUrls[0]);
+    await uploadImage(imageBuffer, imageId);
+  } else {
+    const imageBuffer = base64ToArrayBuffer(data.image);
+    await uploadImage(imageBuffer, imageId);
+  }
   await upsertImage(imageId, {
     prompt,
   }, aiPaySessionId);
+  try {
+    await pipeline.exec();
+  } catch (e) {
+    console.error(e);
+  }
 
-  return new NextResponse(JSON.stringify({ 
-    imageUrl: data.imageUrls[0]
-  }), {
+  const responseBody: GenerateImagesResponseBody = {
+    imageId,
+    imageUrl: generateImageUrl(imageId, "1024", "img"),
+  };
+
+  return new NextResponse(JSON.stringify(responseBody), {
     status: 200,
     headers: {
       "Content-Type": "application/json",

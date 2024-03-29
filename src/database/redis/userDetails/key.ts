@@ -1,4 +1,4 @@
 
 export function userDetailsKeyGen(imageId: string) {
-    return `imageDetails-${imageId}`;
+    return `userDetails-${imageId}`;
 }

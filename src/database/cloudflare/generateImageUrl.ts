@@ -1,9 +1,12 @@
 
-const CLOUDFLARE_ACCOUNT_HASH = "UY1fW9Ni-I1MwvzSsBhVog";
+export const imageSizeVariants = ["1024", "512", "256", "128", "64"] as const;
+
+export type ImageSizeVariant = typeof imageSizeVariants[number];
 
 export function generateImageUrl(
   imageId: string, 
-  variantName: "public" | "512" | "256" | "128" | "64"
+  variantName: ImageSizeVariant,
+  type: "img" | "icon" = "img"
 ) {
-  return `https://imagedelivery.net/${CLOUDFLARE_ACCOUNT_HASH}/${imageId}/${variantName}`;
+  return `https://${type}.gen2d.dev/${imageId}-${variantName}.jpg`;
 }

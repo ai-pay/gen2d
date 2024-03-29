@@ -4,7 +4,7 @@ import { userDetailsKeyGen } from "./key";
 
 export async function addUserDetails(userId: string, userDetails: Omit<UserDetails, "createdAt">, client: Client = redis) {
   await client.json.set(userDetailsKeyGen(userId), "$", {
-    userDetails, 
+    ...userDetails, 
     createdAt: Date.now()
   });
 }

@@ -36,5 +36,4 @@ export function DisplayImages() {
   return <QueryClientProvider client={queryClient}>
     <DisplayImagesContent />
   </QueryClientProvider>;
-
 }
