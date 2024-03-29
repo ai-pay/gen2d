@@ -14,10 +14,8 @@ export const imageDisplayOptions = [
 
 export type ImageDisplayOption = typeof imageDisplayOptions[number];
 
-export function DisplayImagesContent() {
-  // const [displayOption, setDisplayOption] = useState<ImageDisplayOption>(imageDisplayOptions[0]);
-
-  const {imageIds, reloadImages} = useGenerations();
+export function DisplayImagesContent({initialImageIds}: {initialImageIds: string[]}) {
+  const {imageIds, reloadImages} = useGenerations(initialImageIds);
 
   return <div className="flex flex-col gap-3 px-4 sm:px-24 md:px-36 lg:56 pb-20 container">
     <DisplayImagesHeader 
@@ -31,9 +29,9 @@ export function DisplayImagesContent() {
 
 const queryClient = new QueryClient();
 
-export function DisplayImages() {
+export function DisplayImages({initialImageIds}: {initialImageIds: string[]}) {
 
   return <QueryClientProvider client={queryClient}>
-    <DisplayImagesContent />
+    <DisplayImagesContent initialImageIds={initialImageIds} />
   </QueryClientProvider>;
 }

@@ -61,7 +61,6 @@ export function useGenerateImage() {
           icon: "🔥",
         });
 
-        // TODO: type check data
         setImageResponse({
           imageId: data.imageId,
           imageUrl: data.imageUrl,

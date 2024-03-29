@@ -13,6 +13,7 @@ import { upsertImage } from "../../../../database/vector/upsert";
 import { generateImageRequest } from "../../../../types/generateImageRequest";
 import { generateImageId } from "../../../../utils/generateImageId";
 
+export const maxDuration = 300;
 
 function base64ToArrayBuffer(base64: string) {
   const binaryString = atob(base64);
@@ -47,10 +48,6 @@ export const POST = async function (req: NextRequest) {
     aiPaySessionId,
     modelDetails,
   } = parseResult.data;
-
-  if (session) {
-    session.user.id;
-  }
 
   const imgGenRequest: ImageGenerationRequest = (() => {
     switch (modelDetails.model) {

@@ -29,6 +29,14 @@ export default async function Home({ params }: { params: { imageId: string } }) 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 ">
         <div className="relative flex flex-col gap-3 aspect-square bg-neutral-200/60 p-3 rounded-md overflow-y-scroll">
           <div className="sticky top-0 flex flex-row justify-end gap-3">
+            <button
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300
+              bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-800/80 text-neutral-500 hover:text-neutral-950
+              h-10 w-10 outline outline-1 outline-neutral-500/50"
+            >
+              <DocumentDuplicateIcon className="w-5 h-5" />
+            </button>
+
             <a href={`/?prompt=${imageDetails.prompt}&modelDetails=${JSON.stringify(imageDetails.modelDetails)}`} 
               className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300
               bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-800/80 text-neutral-500 hover:text-neutral-950

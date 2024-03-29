@@ -1,6 +1,6 @@
 
 export type UserDetails = {
     createdAt: number;
-    username: string;
+    profileImageId: string;
     imageIds: string[];
 }

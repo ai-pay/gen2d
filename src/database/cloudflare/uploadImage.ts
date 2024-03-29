@@ -46,8 +46,7 @@ export async function uploadImage(imageBuffer: ArrayBufferLike, imageId: string,
         "Content-Type": "image/jpeg",
       };
     
-      const response = await axios.post(imageUrl, resizedImageBuffer, { headers });
-      console.log("Image variant uploaded:", response.status, imageUrl);
+      await axios.post(imageUrl, resizedImageBuffer, { headers });
     }
     catch (error) {
       console.error("Error uploading image variant:", error);

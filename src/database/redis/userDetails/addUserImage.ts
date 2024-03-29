@@ -1,6 +1,6 @@
 import { Client, redis } from "../redisClient";
 import { addUserDetails } from "./addUserDetails";
-import { getUserDetails } from "./existsUserDetails";
+import { getUserDetails } from "./getUserDetails";
 import { userDetailsKeyGen } from "./key";
 
 export async function addUserImage(userId: string, imageId: string, client: Client = redis) {
@@ -9,7 +9,7 @@ export async function addUserImage(userId: string, imageId: string, client: Clie
   if(!userDetails) {
     await addUserDetails(userId, {
       imageIds: [imageId],
-      username: ""
+      profileImageId: ""
     });
   } else {
     await client.json.set(userDetailsKeyGen(userId), "$.imageIds", [...userDetails.imageIds, imageId]);
