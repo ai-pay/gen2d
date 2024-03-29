@@ -23,6 +23,8 @@ module.exports = {
     "unused-imports"
   ],
   "rules": {
+    "react/prop-types": "off",
+    "react/no-unknown-property": "off",
     "react/react-in-jsx-scope": "off",
     "indent": [
       "error",

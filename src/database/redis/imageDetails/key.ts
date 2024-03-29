@@ -1,4 +1,4 @@
 
 export function imageDetailsKeyGen(imageId: string) {
-    return `imageDetails-${imageId}`;
+  return `imageDetails-${imageId}`;
 }

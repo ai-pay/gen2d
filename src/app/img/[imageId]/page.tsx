@@ -1,9 +1,7 @@
-import { DisplayImages } from "@/components/displayImages";
-import { GenerationInput } from "@/components/generationInput";
 import { MainHeader } from "@/components/header";
 import { generateImageUrl, imageSizeVariants } from "@/database/cloudflare/generateImageUrl";
 import { fetchImageDetails } from "@/database/redis/imageDetails/fetchImageDetails";
-import Image from "next/image"
+import Image from "next/image";
 import DocumentDuplicateIcon from "@heroicons/react/24/outline/DocumentDuplicateIcon";
 import ShareIcon from "@heroicons/react/24/outline/ShareIcon";
 
@@ -49,7 +47,7 @@ export default async function Home({ params }: { params: { imageId: string } }) 
           {imageSizeVariants.map((variant) => {
             return <div key={variant} className="flex flex-col text-sm font-bold text-wrap break-words bg-neutral-200 p-3 rounded-md">
               <div>{generateImageUrl(params.imageId, variant)}</div>
-            </div>
+            </div>;
           })}
         </div>
         <Image className="rounded-md" width={1024} height={1024} src={imageUrl} alt={imageDetails.prompt} />

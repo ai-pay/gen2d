@@ -46,8 +46,8 @@ export function GenerationInput() {
   const searchParams = useSearchParams();
 
   const ref = useRef<HTMLTextAreaElement>(null);
-  const [ minFoundHeight, setMinFoundHeight ] = useState(1000);
-  const [ isMultiline, setIsMultiline ] = useState(false);
+  // const [ minFoundHeight, setMinFoundHeight ] = useState(1000);
+  // const [ isMultiline, setIsMultiline ] = useState(false);
 
   const defaultModelDetails = searchParams.get("modelDetails");
   const [ modelDetails, setModelDetails ] = useState<GenerateImageRequest["modelDetails"]>(defaultModelDetails ? JSON.parse(defaultModelDetails) : {
@@ -69,14 +69,14 @@ export function GenerationInput() {
         w-[80vw] sm:w-[512px]">
         <label htmlFor="textarea-input" className=" sr-only">Prompt</label>
         <TextareaAutosize 
-          onResize={() => {
-            if (ref.current && minFoundHeight > ref.current.clientHeight) {
-              setMinFoundHeight(ref.current.clientHeight);
-              setIsMultiline(false);
-            } else if (ref.current) {
-              setIsMultiline(ref.current.clientHeight > minFoundHeight);
-            }
-          }}
+          // onResize={() => {
+          //   if (ref.current && minFoundHeight > ref.current.clientHeight) {
+          //     setMinFoundHeight(ref.current.clientHeight);
+          //     setIsMultiline(false);
+          //   } else if (ref.current) {
+          //     setIsMultiline(ref.current.clientHeight > minFoundHeight);
+          //   }
+          // }}
           defaultValue={searchParams.get("prompt") || ""}
           rows={1}
           maxRows={4}
@@ -116,6 +116,5 @@ export function GenerationInput() {
         <div className="text-sm break-words bg-neutral-200/60 p-3 rounded-md">{imageResponse.prompt}</div>
       </Link>}
     </div>
-
   </div>;
 }

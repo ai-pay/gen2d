@@ -1,2 +1,2 @@
 
-export const RECENT_IMAGE_IDS_KEY = 'recentImageIds';
+export const RECENT_IMAGE_IDS_KEY = "recentImageIds";
