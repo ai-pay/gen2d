@@ -1,21 +1,11 @@
 "use client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
 import { SupportedImageModel } from "ai-pay/models";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { GenerateImageRequest } from "@/types/generateImageRequest";
+import { GenerateImageRequest } from "../../types/generateImageRequest";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const options: Record<SupportedImageModel, string> = {
   "stability-ai-core": "Stability AI Core",

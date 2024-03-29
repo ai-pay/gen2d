@@ -1,9 +1,9 @@
 "use client";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import ArrowPathIcon from "@heroicons/react/24/outline/ArrowPathIcon";
 import { ImageDisplayOption, imageDisplayOptions } from ".";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import { Button } from "../ui/button";
 
 export function DisplayImagesHeader({
   defaultValue = imageDisplayOptions[0],

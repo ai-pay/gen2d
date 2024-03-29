@@ -1,17 +1,18 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/authOptions";
 import { NextRequest, NextResponse } from "next/server";
-import { generateImageRequest } from "@/types/generateImageRequest";
 import { imageGeneration, ImageGenerationRequest } from "ai-pay";
-import { generateImageId } from "@/utils/generateImageId";
 import { uploadImage } from "../../../../database/cloudflare/uploadImage";
-import { addImageId } from "@/database/redis/recentImageIds/addImageId";
-import { addImageDetails } from "@/database/redis/imageDetails/addImageDetails";
-import { addUserImage } from "@/database/redis/userDetails/addUserImage";
-import { redis } from "@/database/redis/redisClient";
-import { upsertImage } from "@/database/vector/upsert";
-import { generateImageUrl, ImageSizeVariant, imageSizeVariants } from "@/database/cloudflare/generateImageUrl";
-import { loadImageBufferFromUrl } from "@/database/cloudflare/loadImageBufferFromUrl";
+import { imageSizeVariants, ImageSizeVariant, generateImageUrl } from "../../../../database/cloudflare/generateImageUrl";
+import { loadImageBufferFromUrl } from "../../../../database/cloudflare/loadImageBufferFromUrl";
+import { addImageDetails } from "../../../../database/redis/imageDetails/addImageDetails";
+import { addImageId } from "../../../../database/redis/recentImageIds/addImageId";
+import { redis } from "../../../../database/redis/redisClient";
+import { addUserImage } from "../../../../database/redis/userDetails/addUserImage";
+import { upsertImage } from "../../../../database/vector/upsert";
+import { generateImageRequest } from "../../../../types/generateImageRequest";
+import { generateImageId } from "../../../../utils/generateImageId";
+
 
 function base64ToArrayBuffer(base64: string) {
   const binaryString = atob(base64);

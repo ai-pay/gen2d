@@ -1,4 +1,4 @@
-import { UserDetails } from "@/types/userDetails";
+import { UserDetails } from "../../../types/userDetails";
 import { Client, redis } from "../redisClient";
 import { userDetailsKeyGen } from "./key";
 

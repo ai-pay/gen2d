@@ -1,7 +1,7 @@
 "use client";
 
+import { useGenerations } from "../../services/useGenerations";
 import { DisplayImagesHeader } from "./header";
-import { useGenerations } from "@/services/useGenerations";
 import { DisplayImagesList } from "./list";
 import {
   QueryClient,

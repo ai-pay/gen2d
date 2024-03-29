@@ -1,25 +1,14 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { FeedbackForm, feedbackFrom } from "@/types/feedback";
+
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, useForm } from "react-hook-form";
 import { useState } from "react";
+import { FeedbackForm, feedbackFrom } from "../../types/feedback";
+import { Button } from "../ui/button";
+import { DialogHeader, DialogFooter, Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { FormField, FormItem, FormLabel, FormControl } from "../ui/form";
+import { Input } from "../ui/input";
 
 export function FeedbackFormButton() {
   const [isOpen, setIsOpen] = useState(false);

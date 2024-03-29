@@ -1,4 +1,4 @@
-import { ImageSizeVariant } from "@/database/cloudflare/generateImageUrl";
+import { ImageSizeVariant } from "../database/cloudflare/generateImageUrl";
 import { GenerateImageRequest } from "./generateImageRequest";
 
 export type ImageDetails = {

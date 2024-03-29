@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchRecentImageIds } from "@/database/redis/recentImageIds/fetchRecentImageIds";
+import { fetchRecentImageIds } from "../../../../database/redis/recentImageIds/fetchRecentImageIds";
 
 export const runtime = "edge";
 

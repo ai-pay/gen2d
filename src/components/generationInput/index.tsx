@@ -5,11 +5,11 @@ import TextareaAutosize from "react-autosize-textarea";
 import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
 import SparklesIcon from "@heroicons/react/24/outline/SparklesIcon";
 import { AdvancedModelSelection } from "./advancedFeaturesInput";
-import { GenerateImageRequest } from "@/types/generateImageRequest";
-import { useGenerateImage } from "@/services/useGenerateImage";
 import { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
+import { GenerateImageRequest } from "../../types/generateImageRequest";
+import { useGenerateImage } from "../../services/useGenerateImage";
 
 function DarkIconButton({
   children,

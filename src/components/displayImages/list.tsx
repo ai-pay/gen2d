@@ -1,8 +1,9 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { generateImageUrl } from "@/database/cloudflare/generateImageUrl";
-import { cn } from "@/lib/utils";
+
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "../../lib/utils";
+import { Skeleton } from "../ui/skeleton";
+import { generateImageUrl } from "../../database/cloudflare/generateImageUrl";
 
 export function DisplayImage({
   imageId,

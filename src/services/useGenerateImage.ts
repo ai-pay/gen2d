@@ -1,8 +1,8 @@
-import { GenerateImageRequest } from "@/types/generateImageRequest";
 import { useState } from "react";
 import { useSessionId } from "ai-pay-react-hooks";
 import toast from "react-hot-toast";
-import { GenerateImagesResponseBody } from "@/app/api/generate/image/route";
+import { GenerateImagesResponseBody } from "../app/api/generate/image/route";
+import { GenerateImageRequest } from "../types/generateImageRequest";
 
 export function useGenerateImage() {
   const sessionId = useSessionId();

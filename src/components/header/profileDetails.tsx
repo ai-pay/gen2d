@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import UserIcon from "@heroicons/react/24/outline/UserIcon";
 import { Button } from "../ui/button";
-import { useUserDetails } from "@/services/useUserDetails";
 import { signIn, signOut } from "next-auth/react";
+import { useUserDetails } from "../../services/useUserDetails";
+import { SheetTrigger, SheetContent, SheetTitle, SheetDescription, Sheet } from "../ui/sheet";
 
 export function ProfileDetails() {
   const user = useUserDetails();

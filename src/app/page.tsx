@@ -1,6 +1,7 @@
-import { DisplayImages } from "@/components/displayImages";
-import { GenerationInput } from "@/components/generationInput";
-import { MainHeader } from "@/components/header";
+import { DisplayImages } from "../components/displayImages";
+import { GenerationInput } from "../components/generationInput";
+import { MainHeader } from "../components/header";
+
 
 export default function Home({
   searchParams

@@ -1,4 +1,4 @@
-import { ImageDetails } from "@/types/imageDetails";
+import { ImageDetails } from "../../../types/imageDetails";
 import { redis } from "../redisClient";
 import { imageDetailsKeyGen } from "./key";
 

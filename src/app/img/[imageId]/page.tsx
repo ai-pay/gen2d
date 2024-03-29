@@ -1,10 +1,11 @@
-import { MainHeader } from "@/components/header";
-import { generateImageUrl, imageSizeVariants } from "@/database/cloudflare/generateImageUrl";
-import { fetchImageDetails } from "@/database/redis/imageDetails/fetchImageDetails";
+
 import Image from "next/image";
 import DocumentDuplicateIcon from "@heroicons/react/24/outline/DocumentDuplicateIcon";
 import ShareIcon from "@heroicons/react/24/outline/ShareIcon";
 import { Metadata } from "next";
+import { fetchImageDetails } from "../../../database/redis/imageDetails/fetchImageDetails";
+import { generateImageUrl, imageSizeVariants } from "../../../database/cloudflare/generateImageUrl";
+import { MainHeader } from "../../../components/header";
 
 
 export async function generateMetadata({ params }: { params: { imageId: string } }): Promise<Metadata> {

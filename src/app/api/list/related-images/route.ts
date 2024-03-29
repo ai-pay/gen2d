@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { queryRelatedImages } from "@/database/vector/query";
-import { getRelatedImagesRequest } from "@/types/getRelatedImagesRequest";
+import { queryRelatedImages } from "../../../../database/vector/query";
+import { getRelatedImagesRequest } from "../../../../types/getRelatedImagesRequest";
 
 export const runtime = "edge";
 

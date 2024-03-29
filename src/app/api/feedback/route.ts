@@ -1,7 +1,7 @@
 
-import { submitFeedback } from "@/database/redis/feedback";
-import { feedbackFrom } from "@/types/feedback";
 import { NextRequest, NextResponse } from "next/server";
+import { submitFeedback } from "../../../database/redis/feedback";
+import { feedbackFrom } from "../../../types/feedback";
 
 export const runtime = "edge";
 
