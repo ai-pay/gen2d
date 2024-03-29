@@ -25,6 +25,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@upstash/redis": "^1.29.0",
     "@upstash/vector": "^1.0.4",
+    "@vercel/analytics": "^1.2.2",
     "@vercel/postgres": "^0.7.2",
     "ai-pay": "^0.3.9",
     "ai-pay-react-hooks": "^0.0.2",
