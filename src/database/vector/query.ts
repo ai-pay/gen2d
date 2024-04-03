@@ -1,21 +1,8 @@
-import { EMBEDDING_MODEL, index } from "./client";
-import OpenAI from "openai";
+import { index } from "./client";
+import { getEmbeddings } from "./getEmbeddings";
 
 export async function queryRelatedImages(prompt: string, aiPaySessionId?: string) {
-    
-  const client = new OpenAI(aiPaySessionId ? {
-    apiKey: aiPaySessionId,
-    baseURL: "https://api.joinaipay.com/api/openai-compatible"
-  } : {
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  
-  const embeddingsResp = await client.embeddings.create({
-    model: EMBEDDING_MODEL,
-    input: [prompt],
-  });
-
-  const vector = embeddingsResp.data[0].embedding;
+  const vector = await getEmbeddings(prompt, aiPaySessionId);
   
   if (!vector) {
     return;

@@ -3,6 +3,7 @@ import { useSessionId } from "ai-pay-react-hooks";
 import toast from "react-hot-toast";
 import { GenerateImagesResponseBody } from "../app/api/generate/image/route";
 import { GenerateImageRequest } from "../types/generateImageRequest";
+import { useUserSettingsStore } from "@/store/userSettings";
 
 export function useGenerateImage() {
   const sessionId = useSessionId();
@@ -17,7 +18,7 @@ export function useGenerateImage() {
     modelDetails: GenerateImageRequest["modelDetails"], 
     prompt: string
   ) => {
-    if (!sessionId) {
+    if (!sessionId && (useUserSettingsStore.getState().freeGenerations ?? 0) <= 0){
       toast.error("Session ID not found. Start an AI Pay session first to generate images.");
       return;
     }

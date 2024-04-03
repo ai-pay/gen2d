@@ -66,7 +66,7 @@ function ProfileDetailsContents() {
         <SheetTitle>Recently Generated Images</SheetTitle>
 
         <div className="grid grid-cols-2 gap-3">
-          {recentImageIds && recentImageIds.length && recentImageIds.map((imageId) => (
+          {recentImageIds && !!recentImageIds.length && recentImageIds.map((imageId) => (
             <Link 
               key={imageId}
               href={`/img/${imageId}`}
@@ -88,7 +88,7 @@ function ProfileDetailsContents() {
           )}
 
 
-          {!recentImageIds && (
+          {user && !recentImageIds && (
             <SheetDescription>
               Loading...
             </SheetDescription>

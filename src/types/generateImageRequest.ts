@@ -24,7 +24,7 @@ export type StabilityAICoreModelDetails = z.infer<typeof stabilityAICoreModelDet
 
 export const generateImageRequest = z.object({
   prompt: z.string().min(1),
-  aiPaySessionId: z.string(),
+  aiPaySessionId: z.optional(z.string()),
   modelDetails: z.union([
     dalle3ModelDetails,
     dalle2ModelDetails,

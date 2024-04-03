@@ -14,6 +14,7 @@ import { useSessionData } from "ai-pay-react-hooks";
 import { AiPayPrompts } from "./aiPayPrompts";
 import toast from "react-hot-toast";
 import { useDisplayImageIdsStore } from "@/store/displayImageIds";
+import { useUserSettingsStore } from "@/store/userSettings";
 
 function DarkIconButton({
   children,
@@ -58,14 +59,14 @@ export function GeneratePromptInput({
   defaultPrompt,
   loading,
   generateImage,
-  children,
 }: {
     defaultPrompt: string | undefined;
     loading: boolean;
     generateImage: (prompt: string) => void;
-    children: React.ReactNode;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
+
+  const freeGenerations = useUserSettingsStore((state) => state.freeGenerations ?? 0);
 
   const setQuery = useDisplayImageIdsStore((state) => state.setQueryType);
 
@@ -75,8 +76,12 @@ export function GeneratePromptInput({
   } = useSessionData();
     
   return <>
+    {!!freeGenerations && <div className="flex flex-col text-neutral-800 mx-auto text-sm">
+      {freeGenerations} free generation{freeGenerations === 1 ? "" : "s"} remaining
+    </div>}
     <div className="z-10 flex flex-row gap-1.5 items-center m-auto divide-zinc-600 bg-neutral-900 shadow-md shadow-black/40 rounded-md pl-2 pr-1.5 py-0.5
     w-[80vw] sm:w-[512px]">
+
       <label htmlFor="textarea-input" className=" sr-only">Prompt</label>
       <TextareaAutosize
         defaultValue={defaultPrompt || ""}
@@ -90,7 +95,7 @@ export function GeneratePromptInput({
 
       <DarkIconButton
         loading={loading}
-        disabled={sessionState !== "ACTIVE"}
+        disabled={sessionState !== "ACTIVE" && freeGenerations <= 0}
         tooltip={sessionState !== "ACTIVE" ? (
           <p className="w-[200px] text-neutral-600 text-sm">
             Generating images requires an AI Pay session. {!browserExtensionInstalled ? <>
@@ -140,8 +145,9 @@ export function GeneratePromptInput({
         <MagnifyingGlassIcon className="h-5 w-5" />
       </DarkIconButton>
     </div>
-    <AiPayPrompts browserExtensionInstalled={browserExtensionInstalled} sessionState={sessionState} >
-      {children}
-    </AiPayPrompts>
+    {!freeGenerations && <AiPayPrompts 
+      browserExtensionInstalled={browserExtensionInstalled} 
+      sessionState={sessionState} />
+    }
   </>;
 }

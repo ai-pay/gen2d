@@ -8,6 +8,9 @@ interface UserSettingsStore {
 
   userImageIds: string[];
   setUserImageIds(imageIds: string[]): void;
+
+  freeGenerations: number | undefined;
+  setFreeGenerations(freeGenerations: number): void;
 }
 
 export const useUserSettingsStore = create<UserSettingsStore>()(immer((set) => ({
@@ -19,5 +22,10 @@ export const useUserSettingsStore = create<UserSettingsStore>()(immer((set) => (
   userImageIds: [],
   setUserImageIds: (imageIds: string[]) => set((state) => {
     state.userImageIds = imageIds;
+  }),
+
+  freeGenerations: undefined,
+  setFreeGenerations: (freeGenerations: number) => set((state) => {
+    state.freeGenerations = freeGenerations;
   }),
 })));

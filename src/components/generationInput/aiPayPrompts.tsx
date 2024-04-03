@@ -5,11 +5,9 @@ import { SessionStatus } from "ai-pay";
 export function AiPayPrompts({
   browserExtensionInstalled,
   sessionState,
-  children,
 } : {
     browserExtensionInstalled: boolean;
     sessionState: SessionStatus;
-    children: React.ReactNode;
 }) {
 
   if (!browserExtensionInstalled) {
@@ -45,5 +43,5 @@ export function AiPayPrompts({
     </p>;
   }
 
-  return children;
+  return null;
 }

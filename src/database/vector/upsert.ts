@@ -1,16 +1,9 @@
-import { embeddings } from "ai-pay";
-import { EMBEDDING_MODEL, index, Metadata } from "./client";
+import { index, Metadata } from "./client";
+import { getEmbeddings } from "./getEmbeddings";
 
 
-export async function upsertImage(imageId: string, metadata: Metadata, aiPaySessionId: string) {
-  const {
-    data,
-  } = await embeddings({
-    model: EMBEDDING_MODEL,
-    inputs: [metadata.prompt],
-  }, {sessionId: aiPaySessionId});
-
-  const vector = data?.embeddings[0];
+export async function upsertImage(imageId: string, metadata: Metadata, aiPaySessionId?: string) {
+  const vector = await getEmbeddings(metadata.prompt, aiPaySessionId);
 
   if (!vector) {
     return;

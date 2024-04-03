@@ -2,8 +2,7 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/authOptions";
 import { NextResponse } from "next/server";
-import { getUserDetails } from "@/database/redis/userDetails/getUserDetails";
-import { createNewUser } from "@/database/redis/userDetails/createNewUser";
+import { getNumberFreeGenerations } from "@/database/redis/freeCredits/getNumberFreeCredits";
 
 export const GET = async function () {
   const session = await getServerSession(authOptions);
@@ -17,13 +16,9 @@ export const GET = async function () {
     });
   }
 
-  let details = await getUserDetails(session.user.id);
+  const freeGenerations = await getNumberFreeGenerations(session.user.id);
 
-  if (!details) {
-    details = await createNewUser(session.user.id);
-  }
-
-  return new NextResponse(JSON.stringify(details), {
+  return new NextResponse(JSON.stringify({freeGenerations}), {
     status: 200,
     headers: {
       "Content-Type": "application/json",

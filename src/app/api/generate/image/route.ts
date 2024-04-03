@@ -8,10 +8,12 @@ import { loadImageBufferFromUrl } from "../../../../database/cloudflare/loadImag
 import { addImageDetails } from "../../../../database/redis/imageDetails/addImageDetails";
 import { addImageId } from "../../../../database/redis/recentImageIds/addImageId";
 import { redis } from "../../../../database/redis/redisClient";
-import { addUserImage } from "../../../../database/redis/userDetails/addUserImage";
+import { setUserImage } from "../../../../database/redis/userDetails/setUserImage";
 import { upsertImage } from "../../../../database/vector/upsert";
 import { generateImageRequest } from "../../../../types/generateImageRequest";
 import { generateImageId } from "../../../../utils/generateImageId";
+import { decrementFreeGenerationsIfAvailable } from "@/database/redis/freeCredits/decrimentFreeGenerationsIfAvailable";
+import { getFreeImage } from "./getFreeImage";
 
 export const maxDuration = 300;
 
@@ -31,6 +33,7 @@ export type GenerateImagesResponseBody = {
 
 export const POST = async function (req: NextRequest) {
   const session = await getServerSession(authOptions);
+  const uid = session?.user.id;
 
   const parseResult = generateImageRequest.safeParse(await req.json());
 
@@ -76,24 +79,45 @@ export const POST = async function (req: NextRequest) {
     }
   })();
 
-  const {
-    data,
-    error,
-    debugError
-  } = await imageGeneration(imgGenRequest, {
-    sessionId: aiPaySessionId,
-  });
-
-  if (!data) {
-    if (debugError) {
-      console.error(debugError);
+  let imageBuffer: ArrayBufferLike;
+  if (uid && (await decrementFreeGenerationsIfAvailable(uid))) {
+    const base64Image = await getFreeImage(parseResult.data);
+    imageBuffer = base64ToArrayBuffer(base64Image);
+  } else {
+    if (!aiPaySessionId) {
+      return new NextResponse(JSON.stringify({ error: "No aiPaySessionId provided" }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     }
-    return new NextResponse(JSON.stringify({ error }), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
+
+    const {
+      data,
+      error,
+      debugError
+    } = await imageGeneration(imgGenRequest, {
+      sessionId: aiPaySessionId,
     });
+  
+    if (!data) {
+      if (debugError) {
+        console.error(debugError);
+      }
+      return new NextResponse(JSON.stringify({ error }), {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    if ("imageUrls" in data) {
+      imageBuffer = await loadImageBufferFromUrl(data.imageUrls[0]);
+    } else {
+      imageBuffer = base64ToArrayBuffer(data.image);
+    }
   }
 
   const imageId = generateImageId();
@@ -113,17 +137,10 @@ export const POST = async function (req: NextRequest) {
   }, pipeline);
 
   if (session?.user.id) {
-    await addUserImage(session.user.id, imageId, pipeline);
+    await setUserImage(session.user.id, imageId, pipeline);
   }
 
-  // TODO: Promise.all
-  if ("imageUrls" in data) {
-    const imageBuffer = await loadImageBufferFromUrl(data.imageUrls[0]);
-    await uploadImage(imageBuffer, imageId);
-  } else {
-    const imageBuffer = base64ToArrayBuffer(data.image);
-    await uploadImage(imageBuffer, imageId);
-  }
+  await uploadImage(imageBuffer, imageId);
   await upsertImage(imageId, {
     prompt,
   }, aiPaySessionId);
