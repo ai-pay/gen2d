@@ -59,10 +59,12 @@ export function GeneratePromptInput({
   defaultPrompt,
   loading,
   generateImage,
+  children,
 }: {
     defaultPrompt: string | undefined;
     loading: boolean;
     generateImage: (prompt: string) => void;
+    children: React.ReactNode;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
 
@@ -149,5 +151,6 @@ export function GeneratePromptInput({
       browserExtensionInstalled={browserExtensionInstalled} 
       sessionState={sessionState} />
     }
+    {(!!freeGenerations || sessionState === "ACTIVE") && children }
   </>;
 }

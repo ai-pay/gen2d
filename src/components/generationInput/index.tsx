@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AdvancedModelSelection } from "./advancedFeaturesInput/index";
 import Image from "next/image";
 import Link from "next/link";
 import { GenerateImageRequest } from "../../types/generateImageRequest";
@@ -10,6 +9,7 @@ import { GeneratePromptInput } from "./promptInput";
 import { useUserSettingsStore } from "@/store/userSettings";
 import { AboveInputLogin } from "./aboveInputLogin";
 import { SessionProvider } from "next-auth/react";
+import { AdvancedModelSelection } from "./advancedFeaturesInput";
 
 export function GenerationInput({
   defaultModelDetails,
@@ -53,9 +53,9 @@ export function GenerationInput({
         generateImage={function (prompt: string): void {
           generateImage(modelDetails, prompt);
         } } >
-          
+
+        <AdvancedModelSelection modelDetails={modelDetails} setModelDetails={setModelDetails} />
       </GeneratePromptInput>
-      <AdvancedModelSelection modelDetails={modelDetails} setModelDetails={setModelDetails} />
 
       {imageResponse && <Link 
         href={"/img/" + imageResponse.imageId}
