@@ -20,7 +20,7 @@ export const GET = async function () {
   let details = await getUserDetails(session.user.id);
 
   if (!details) {
-    details = await createNewUser(session.user.id);
+    details = await createNewUser(session.user.id, session.user.email ?? "", session.user.name ?? "");
   }
 
   return new NextResponse(JSON.stringify(details), {
