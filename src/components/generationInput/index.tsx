@@ -8,6 +8,8 @@ import { GenerateImageRequest } from "../../types/generateImageRequest";
 import { useGenerateImage } from "../../services/useGenerateImage";
 import { GeneratePromptInput } from "./promptInput";
 import { useUserSettingsStore } from "@/store/userSettings";
+import { AboveInputLogin } from "./aboveInputLogin";
+import { SessionProvider } from "next-auth/react";
 
 export function GenerationInput({
   defaultModelDetails,
@@ -40,6 +42,10 @@ export function GenerationInput({
 
   return <div className="flex py-[10vh] my-12 justify-center items-center">
     <div className="relative flex flex-col gap-3 justify-center w-[80vw] sm:w-[512px]">
+
+      <SessionProvider>
+        <AboveInputLogin />
+      </SessionProvider>
       
       <GeneratePromptInput 
         defaultPrompt={defaultPrompt} 

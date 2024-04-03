@@ -36,7 +36,9 @@ export function useGenerations(initialImageIds: string[] = []) {
   const prompt = "prompt" in query ? query.prompt : undefined;
 
   const fetchImages = useCallback(async () => {
-    const toastId = toast.loading("Loading images...");
+    const toastId = toast.loading("Loading images...", {
+      id: "fetchImages",
+    });
     setImageIds(undefined);
     try {
       if (prompt) {
