@@ -3,7 +3,7 @@ import { redis } from "@/database/redis/redisClient";
 import { MetadataRoute } from "next";
  
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const urls = await redis.get(RECENT_IMAGE_IDS_KEY) as string[] ?? [];
+  const urls = await redis.lrange(RECENT_IMAGE_IDS_KEY, 0, -1) as string[] ?? [];
 
   const dynamic = urls.map((url) => ({
     url: `https://www.gen2d.dev/image/${url}`,
