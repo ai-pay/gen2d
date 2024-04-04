@@ -79,11 +79,14 @@ export const POST = async function (req: NextRequest) {
     }
   })();
 
-  let promptToEmbed: string = prompt;
+  let revisedPrompt: string | undefined;
   let imageBuffer: ArrayBufferLike;
   if (uid && (await decrementFreeGenerationsIfAvailable(uid))) {
-    const {base64Image, revisedPrompt } = await getFreeImage(parseResult.data);
-    promptToEmbed = revisedPrompt ?? promptToEmbed;
+    const {
+      base64Image, 
+      revisedPrompt: rp 
+    } = await getFreeImage(parseResult.data);
+    revisedPrompt = rp;
     imageBuffer = base64ToArrayBuffer(base64Image);
   } else {
     if (!aiPaySessionId) {
@@ -121,7 +124,7 @@ export const POST = async function (req: NextRequest) {
       imageBuffer = base64ToArrayBuffer(data.base64Images[0]);
     }
 
-    promptToEmbed = data.imageDetails?.[0].revisedPrompt ?? promptToEmbed;
+    revisedPrompt = data.imageDetails?.[0].revisedPrompt;
   }
 
   const imageId = generateImageId();
@@ -134,6 +137,9 @@ export const POST = async function (req: NextRequest) {
     createdAt: Date.now(),
     sizeVariants: imageSizeVariants as unknown as ImageSizeVariant[],
     prompt,
+    ...(revisedPrompt ? {
+      revisedPrompt: revisedPrompt
+    }: {}),
     modelDetails,
     ownerId: session?.user.id,
     likes: [],
@@ -146,7 +152,7 @@ export const POST = async function (req: NextRequest) {
 
   await uploadImage(imageBuffer, imageId);
   await upsertImage(imageId, {
-    prompt: promptToEmbed,
+    prompt: revisedPrompt ?? prompt,
   }, aiPaySessionId);
   try {
     await pipeline.exec();
