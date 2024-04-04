@@ -79,9 +79,11 @@ export const POST = async function (req: NextRequest) {
     }
   })();
 
+  let promptToEmbed: string = prompt;
   let imageBuffer: ArrayBufferLike;
   if (uid && (await decrementFreeGenerationsIfAvailable(uid))) {
-    const base64Image = await getFreeImage(parseResult.data);
+    const {base64Image, revisedPrompt } = await getFreeImage(parseResult.data);
+    promptToEmbed = revisedPrompt ?? promptToEmbed;
     imageBuffer = base64ToArrayBuffer(base64Image);
   } else {
     if (!aiPaySessionId) {
@@ -116,8 +118,10 @@ export const POST = async function (req: NextRequest) {
     if ("imageUrls" in data) {
       imageBuffer = await loadImageBufferFromUrl(data.imageUrls[0]);
     } else {
-      imageBuffer = base64ToArrayBuffer(data.image);
+      imageBuffer = base64ToArrayBuffer(data.base64Images[0]);
     }
+
+    promptToEmbed = data.imageDetails?.[0].revisedPrompt ?? promptToEmbed;
   }
 
   const imageId = generateImageId();
@@ -142,7 +146,7 @@ export const POST = async function (req: NextRequest) {
 
   await uploadImage(imageBuffer, imageId);
   await upsertImage(imageId, {
-    prompt,
+    prompt: promptToEmbed,
   }, aiPaySessionId);
   try {
     await pipeline.exec();

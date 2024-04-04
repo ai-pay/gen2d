@@ -5,7 +5,10 @@ import OpenAI from "openai";
 
 export async function getFreeImage(
   imgGenRequest: GenerateImageRequest
-): Promise<string> {
+): Promise<{
+  base64Image: string,
+  revisedPrompt?: string
+}> {
   if (imgGenRequest.modelDetails.model === "stability-ai-core") {
     const request: StabilityAiCoreRequest = {
       prompt: imgGenRequest.prompt,
@@ -33,7 +36,9 @@ export async function getFreeImage(
           "seed": number
         };
 
-      return data.image;
+      return {
+        base64Image: data.image,
+      };
     } 
 
     throw new Error(`Failed to generate image: ${response.data.error}`);
@@ -52,6 +57,9 @@ export async function getFreeImage(
       } : {}),
     });
 
-    return response.data[0].b64_json as string;
+    return {
+      base64Image: response.data[0].b64_json as string,
+      revisedPrompt: response.data[0].revised_prompt as string,
+    };
   }
 }
