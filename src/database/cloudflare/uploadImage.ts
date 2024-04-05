@@ -38,7 +38,9 @@ export async function uploadImage(imageBuffer: ArrayBufferLike, imageId: string,
     
       const resizedImageBuffer = await sharp(imageBuffer)
         .resize(size, size, { fit: "cover" })
-        .jpeg()
+        .jpeg({
+          quality: 93
+        })
         .toBuffer();
 
       const headers = {
