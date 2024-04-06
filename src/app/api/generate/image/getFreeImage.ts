@@ -3,12 +3,46 @@ import { StabilityAiCoreRequest } from "ai-pay";
 import axios, { toFormData } from "axios";
 import OpenAI from "openai";
 
+async function moderateInput(prompt: string) {
+  const openai = new OpenAI();
+
+  const modRes = await openai.moderations.create({
+    model: "text-moderation-latest",
+    input: prompt,
+  });
+
+  try {
+    modRes.results.forEach((mod) => {
+      if (mod.flagged) {
+        throw new Error();
+      }
+    });
+  } catch (error) {
+    return {
+      error: "Prompt was flagged for moderation"
+    };
+  }
+}
+
 export async function getFreeImage(
   imgGenRequest: GenerateImageRequest
 ): Promise<{
+  moderated: true,
+  error?: string
+} | {
+  moderated: false,
   base64Image: string,
   revisedPrompt?: string
 }> {
+  const moderated = await moderateInput(imgGenRequest.prompt);
+
+  if (moderated) {
+    return {
+      moderated: true,
+      error: moderated.error
+    };
+  }
+
   if (imgGenRequest.modelDetails.model === "stability-ai-core") {
     const request: StabilityAiCoreRequest = {
       prompt: imgGenRequest.prompt,
@@ -37,6 +71,7 @@ export async function getFreeImage(
         };
 
       return {
+        moderated: false,
         base64Image: data.image,
       };
     } 
@@ -58,6 +93,7 @@ export async function getFreeImage(
     });
 
     return {
+      moderated: false,
       base64Image: response.data[0].b64_json as string,
       revisedPrompt: response.data[0].revised_prompt as string,
     };

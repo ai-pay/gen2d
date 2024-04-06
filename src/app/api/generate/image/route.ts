@@ -82,12 +82,18 @@ export const POST = async function (req: NextRequest) {
   let revisedPrompt: string | undefined;
   let imageBuffer: ArrayBufferLike;
   if (uid && (await decrementFreeGenerationsIfAvailable(uid))) {
-    const {
-      base64Image, 
-      revisedPrompt: rp 
-    } = await getFreeImage(parseResult.data);
-    revisedPrompt = rp;
-    imageBuffer = base64ToArrayBuffer(base64Image);
+    const imageResult = await getFreeImage(parseResult.data);
+    if (imageResult.moderated) {
+      return new NextResponse(JSON.stringify({ error: imageResult.error }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    revisedPrompt = imageResult.revisedPrompt;
+    imageBuffer = base64ToArrayBuffer(imageResult.base64Image);
   } else {
     if (!aiPaySessionId) {
       return new NextResponse(JSON.stringify({ error: "No aiPaySessionId provided" }), {
