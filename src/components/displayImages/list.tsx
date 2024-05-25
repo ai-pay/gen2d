@@ -28,6 +28,7 @@ export function DisplayImage({
         height={256}
         alt={`Generated image for id: ${imageId}`}
         src={generateImageUrl(imageId, "256")}
+        unoptimized
       />}
 
       {text && <div className="absolute inset-0 flex items-center justify-center text-neutral-500">
