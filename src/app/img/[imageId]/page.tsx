@@ -89,6 +89,7 @@ export default async function Home({ params }: { params: { imageId: string } }) 
     redirect("/");
   }
 
+  return <>
     <Head>
       <link
         rel="canonical"
