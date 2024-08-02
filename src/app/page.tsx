@@ -3,7 +3,7 @@
 import { DisplayImages } from "../components/displayImages";
 import { GenerationInput } from "../components/generationInput";
 import { MainHeader } from "../components/header";
-import { fetchRecentImageIds } from "../database/redis/recentImageIds/fetchRecentImageIds";
+import Head from "next/head";
 
 export default async function Home({
   searchParams

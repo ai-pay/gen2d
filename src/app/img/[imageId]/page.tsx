@@ -18,6 +18,7 @@ import { CopyButton } from "./copyButton";
 import { SetProfileIconIdButton } from "./setProfileIconIdButton";
 import { ShareLinkButton } from "./shareLinkButton";
 import { redirect } from "next/navigation";
+import Head from "next/head";
 
 function IconLink({
   children,
