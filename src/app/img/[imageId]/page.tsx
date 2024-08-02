@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: { params: { imageId: string }
  
   return {
     title: "Image Details",
-    description: `AI Generated Image, Prompt: ${imageDetails?.prompt}`,
+    description: imageDetails?.prompt ?? "AI - Generated Image",
     openGraph: {
       title: "GEN2D - AI Image Generation",
       description: `GEN2D, Prompt: ${imageDetails?.prompt}`,
@@ -89,7 +89,11 @@ export default async function Home({ params }: { params: { imageId: string } }) 
     redirect("/");
   }
 
-  return <>
+    <Head>
+      <link
+        rel="canonical"
+        href={`https://www.gen2d.dev/img/${params.imageId}`} />
+    </Head>
     <MainHeader />
     <main className="grid grid-cols-1 sm:grid-cols-2 gap-3 container pb-8">
       <div className="flex flex-col gap-3 my-auto">

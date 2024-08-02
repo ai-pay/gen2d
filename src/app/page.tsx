@@ -13,6 +13,11 @@ export default async function Home({
   const initialImageIds = await fetchRecentImageIds();
 
   return <>
+    <Head>
+      <link
+        rel="canonical"
+        href="https://www.gen2d.dev" />
+    </Head>
     <MainHeader />
     <main className="flex min-h-screen flex-col items-center justify-between">
       <GenerationInput defaultModelDetails={searchParams["modelDetails"]} defaultPrompt={searchParams["prompt"]} />
