@@ -1,5 +1,5 @@
 import { type NextRequest } from "next/server";
-import { getRandomImageId } from "@/database/redis/randomImageId";
+import { getRandomImageIds } from "@/database/redis/randomImageId";
 import { getVector } from "@/database/vector/getVector";
 import { queryVector } from "@/database/vector/queryVector";
 import { updateRelatedImages } from "@/database/redis/imageDetails/updateRelatedImages";
@@ -13,23 +13,27 @@ export async function GET(request: NextRequest) {
   }
 
   // get random image id
-  const imageId = await getRandomImageId();
+  const imageIds = await getRandomImageIds(50);
 
-  // get related image ids
-  const embedding = await getVector(imageId);
+  await Promise.all(imageIds.map(async (imageId) => {
+    // get related image ids
+    const embedding = await getVector(imageId);
 
-  if (!embedding) {
-    return Response.json({
-      success: false,
-    });
-  }
+    if (!embedding) {
+      return Response.json({
+        success: false,
+      }, {
+        status: 500,
+      });
+    }
 
-  const images = await queryVector(embedding, 20);
+    const images = await queryVector(embedding, 20);
 
-  const imageIds = images?.map((image) => String(image.id)) || [];
+    const relatedImageIds = images?.map((image) => String(image.id)) || [];
 
-  // update related image ids
-  await updateRelatedImages(imageId, imageIds);
+    // update related image ids
+    await updateRelatedImages(imageId, relatedImageIds);
+  }));
 
   return Response.json({
     success: true,
