@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   }
 
   // get random image id
-  const imageIds = await getRandomImageIds(50);
+  const imageIds = await getRandomImageIds(5);
 
   await Promise.all(imageIds.map(async (imageId) => {
     // get related image ids
