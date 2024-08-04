@@ -1,6 +1,6 @@
 import { ImageDetails } from "../../../types/imageDetails";
-import { redis } from "../redisClient";
 import { imageDetailsKeyGen } from "./key";
+import { redis } from "../redisClient";
 
 export async function fetchImageDetails(imageId: string) {
   return await redis.json.get(imageDetailsKeyGen(imageId)) as ImageDetails | null;

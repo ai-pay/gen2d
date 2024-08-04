@@ -1,14 +1,13 @@
-import { useDisplayImageIdsStore } from "@/store/displayImageIds";
 import { GetRelatedImagesRequest } from "@/types/getRelatedImagesRequest";
-import { AiPayClient } from "ai-pay";
-import { useCallback, useEffect } from "react";
+import {
+  useCallback, useEffect, useRef
+} from "react";
+import { useDisplayImageIdsStore } from "@/store/displayImageIds";
 import toast from "react-hot-toast";
 
 export const fetchRelatedImages = async (prompt: string) => {
-  const aiPaySessionId = AiPayClient.getInstance().getClientSessionId();
   const body: GetRelatedImagesRequest = {
     prompt,
-    aiPaySessionId,
   };
 
   const response = await fetch("/api/list/related-images", {
@@ -29,7 +28,9 @@ export const fetchRecentImagesIds = async () => {
   return data.imageIds as string[];
 };
 
-export function useGenerations(initialImageIds: string[] = []) {
+export function useGenerations() {
+  const firstUpdate = useRef(Date.now());
+
   const query = useDisplayImageIdsStore((state) => state.queryType);
   const setImageIds = useDisplayImageIdsStore((state) => state.setImageIds);
 
@@ -46,23 +47,25 @@ export function useGenerations(initialImageIds: string[] = []) {
       } else {
         setImageIds(await fetchRecentImagesIds());
       }
-      toast.success("Images Loaded.", { id: toastId });
+      toast.success("Images Loaded.", {
+        id: toastId,
+      });
     } catch (error) {
       console.error("Failed to fetch images", error);
-      toast.success("Failed to load images.", { id: toastId });
+      toast.success("Failed to load images.", {
+        id: toastId,
+      });
     }
-
   }, [prompt, setImageIds]);
 
   useEffect(() => {
-    setImageIds(initialImageIds);
-  }, [setImageIds, initialImageIds]);
-
-  useEffect(() => {
+    if (Date.now() - firstUpdate.current < 1000) {
+      return;
+    }
     fetchImages();
-  }, [query, fetchImages]);
+  }, [query.type, query.type === "search" ? query.prompt : 0, fetchImages]);
 
   return {
-    reloadImages: fetchImages
+    reloadImages: fetchImages,
   };
 }

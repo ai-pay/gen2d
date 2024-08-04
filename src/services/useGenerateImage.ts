@@ -1,28 +1,78 @@
-import { useState } from "react";
-import { useSessionId } from "ai-pay-react-hooks";
-import toast from "react-hot-toast";
-import { GenerateImagesResponseBody } from "../app/api/generate/image/route";
 import { GenerateImageRequest } from "../types/generateImageRequest";
-import { useUserSettingsStore } from "@/store/userSettings";
+import { GenerateImagesResponseBody } from "../app/api/generate/image/route";
+import { reloadCreditsRemaining } from "./reloadCreditsRemaining";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
-export function useGenerateImage() {
-  const sessionId = useSessionId();
-  const [loading, setLoading] = useState(false);
-  const [imageResponse, setImageResponse] = useState<{
+export type GenerationsRequest = {
+  key: string;
+  request: GenerateImageRequest;
+  response: {
+    type: "pending";
+  } | {
+    type: "success";
     imageId: string;
     imageUrl: string;
-    prompt: string;
-  } | null>(null);
+  } | {
+    type: "error";
+    error: string;
+  };
+};
+
+export function useGenerateImage() {
+  const [loading, setLoading] = useState(false);
+  const [imageGenerations, setImageGenerations] = useState<GenerationsRequest[]>([
+    // {
+    //   key: "test",
+    //   request: {
+    //     prompt: "some random prompt",
+    //     modelDetails: {
+    //       model: "dall-e-3",
+    //       quality: "standard",
+    //       style: "vivid",
+    //     },
+    //   },
+    //   response: {
+    //     type: "pending",
+    //   },
+    // },
+    // {
+    //   key: "test2",
+    //   request: {
+    //     prompt: "some random prompt",
+    //     modelDetails: {
+    //       model: "dall-e-3",
+    //       quality: "standard",
+    //       style: "vivid",
+    //     },
+    //   },
+    //   response: {
+    //     type: "success",
+    //     imageId: "test",
+    //     imageUrl: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+    //   },
+    // },
+    // {
+    //   key: "test3",
+    //   request: {
+    //     prompt: "some random prompt",
+    //     modelDetails: {
+    //       model: "dall-e-3",
+    //       quality: "standard",
+    //       style: "vivid",
+    //     },
+    //   },
+    //   response: {
+    //     type: "error",
+    //     error: "test",
+    //   },
+    // },
+  ]);
 
   const generateImage = async (
-    modelDetails: GenerateImageRequest["modelDetails"], 
-    prompt: string
+    modelDetails: GenerateImageRequest["modelDetails"],
+    prompt: string,
   ) => {
-    if (!sessionId && (useUserSettingsStore.getState().freeGenerations ?? 0) <= 0){
-      toast.error("Session ID not found. Start an AI Pay session first to generate images.");
-      return;
-    }
-
     if (loading) {
       return;
     }
@@ -34,13 +84,27 @@ export function useGenerateImage() {
     const request: GenerateImageRequest = {
       modelDetails,
       prompt,
-      aiPaySessionId: sessionId,
     };
 
     setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
 
-    const toastId = toast.loading("Generating image...");
+    const randomId = Math.random().toString(36).substring(10);
+
     try {
+      setImageGenerations((prev) => [
+        {
+          key: randomId,
+          request,
+          response: {
+            type: "pending",
+          },
+        },
+        ...prev,
+      ]);
+
       const response = await fetch("/api/generate/image", {
         method: "POST",
         headers: {
@@ -52,36 +116,55 @@ export function useGenerateImage() {
       if (response.ok) {
         const data = await response.json() as GenerateImagesResponseBody;
 
-        toast.success("Successfully generated image.", {
-          duration: 5000,
-          icon: "🔥",
-          id: toastId,
+        setImageGenerations((prev) => {
+          return prev.map((generation) => {
+            if (generation.key === randomId) {
+              return {
+                key: randomId,
+                request,
+                response: {
+                  type: "success",
+                  imageId: data.imageId,
+                  imageUrl: data.imageUrl,
+                },
+              };
+            } else {
+              return generation;
+            }
+          });
         });
 
-        setImageResponse({
-          imageId: data.imageId,
-          imageUrl: data.imageUrl,
-          prompt,
-        });
+        await reloadCreditsRemaining();
       } else {
         const data = await response.json() as { error: string };
 
-        toast.error(`Failed to generate image with error: ${data.error}`, {
-          id: toastId,
+        setImageGenerations((prev) => {
+          return prev.map((generation) => {
+            if (generation.key === randomId) {
+              return {
+                key: randomId,
+                request,
+                response: {
+                  type: "error",
+                  error: data.error,
+                },
+              };
+            } else {
+              return generation;
+            }
+          });
         });
+
+        toast.error(`Failed to generate image with error: ${data.error}`);
       }
     } catch {
-      toast.error("Failed to generate image.", {
-        id: toastId,
-      });
+      toast.error("Failed to generate image.");
     }
-
-    setLoading(false);
   };
 
   return {
     loading,
-    imageResponse,
+    imageGenerations,
     generateImage,
   };
 }

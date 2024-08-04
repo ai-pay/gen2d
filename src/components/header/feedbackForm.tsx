@@ -1,88 +1,77 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { FormProvider, useForm } from "react-hook-form";
-import { useState } from "react";
+import {
+  Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader,
+  Textarea
+} from "@nextui-org/react";
 import { FeedbackForm, feedbackFrom } from "../../types/feedback";
-import { Button } from "../ui/button";
-import { DialogHeader, DialogFooter, Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { FormField, FormItem, FormLabel, FormControl } from "../ui/form";
-import { Input } from "../ui/input";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 export function FeedbackFormButton() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const form = useForm<FeedbackForm>({
-    resolver: zodResolver(feedbackFrom),
-    defaultValues: {
-      feedback: "",
-    },
-  });
- 
+  const [description, setDescription] = useState("");
+
   function onSubmit(values: FeedbackForm) {
+    const res = feedbackFrom.safeParse(values);
+
+    if (!res.success) {
+      toast.error(res.error.message);
+      return;
+    }
+
     (async () => {
-      console.log(values);
       fetch("/api/feedback", {
         method: "POST",
         body: JSON.stringify(values),
       });
     })();
+    toast.success("Thanks for your feedback!");
     setIsOpen(false);
   }
 
-  return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="secondary">Feedback</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Feedback</DialogTitle>
-        </DialogHeader>
-        <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="feedback"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Description" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email (optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="john@example.com" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name (optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <Button type="submit">Submit Feedback</Button>
-            </DialogFooter>
-          </form>
-        </FormProvider>
-      </DialogContent>
-    </Dialog>
-  );
+  return <>
+    <Button
+      variant="flat"
+      onClick={() => setIsOpen(!isOpen)}
+    >
+      Feedback
+    </Button>
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={(newOpen) => {
+        setIsOpen(newOpen);
+        if (!newOpen) {
+          setDescription("");
+        }
+      }}
+    >
+      <ModalContent>
+        <ModalHeader>
+        Feedback
+        </ModalHeader>
+        <ModalBody>
+          <Textarea
+            label="Description"
+            value={description}
+            onValueChange={setDescription}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            onClick={() => setIsOpen(false)}>
+            Close
+          </Button>
+          <Button
+            onClick={() => onSubmit({
+              feedback: description,
+            })}
+          >
+            Submit Feedback
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  </>;
 }

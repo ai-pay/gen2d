@@ -8,8 +8,6 @@ function generateRandomString(length: number): string {
   return result;
 }
 
-
 export const generateImageId = () => {
-  // TODO: remember to change this as the number of images grows
   return generateRandomString(10);
 };

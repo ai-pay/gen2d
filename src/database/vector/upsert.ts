@@ -1,17 +1,16 @@
-import { index, Metadata } from "./client";
+import { Metadata, index } from "./client";
 import { getEmbeddings } from "./getEmbeddings";
 
-
-export async function upsertImage(imageId: string, metadata: Metadata, aiPaySessionId?: string) {
-  const vector = await getEmbeddings(metadata.prompt, aiPaySessionId);
+export async function upsertImage(imageId: string, metadata: Metadata, uid: string) {
+  const vector = await getEmbeddings(metadata.prompt, uid);
 
   if (!vector) {
     return;
   }
 
   await index.upsert({
-    id: imageId, 
+    id: imageId,
     vector,
-    metadata: metadata
+    metadata: metadata,
   });
 }

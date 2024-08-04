@@ -1,15 +1,17 @@
 
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/authOptions";
 import { NextResponse } from "next/server";
-import { getUserDetails } from "@/database/redis/userDetails/getUserDetails";
 import { createNewUser } from "@/database/redis/userDetails/createNewUser";
+import { getFirebaseServerDecodedToken } from "@/utils/firebase/getServerToken";
+import { getUserDetails } from "@/database/redis/userDetails/getUserDetails";
 
-export const GET = async function () {
-  const session = await getServerSession(authOptions);
+export const GET = async function() {
+  const decodedToken = await getFirebaseServerDecodedToken();
+  const uid = decodedToken?.uid;
 
-  if (!session) {
-    return new NextResponse(JSON.stringify({ error: "Unauthorized. Login to make a request" }), {
+  if (!uid) {
+    return new NextResponse(JSON.stringify({
+      error: "Unauthorized. Login to make a request",
+    }), {
       status: 401,
       headers: {
         "Content-Type": "application/json",
@@ -17,10 +19,10 @@ export const GET = async function () {
     });
   }
 
-  let details = await getUserDetails(session.user.id);
+  let details = await getUserDetails(uid);
 
   if (!details) {
-    details = await createNewUser(session.user.id, session.user.email ?? "", session.user.name ?? "");
+    details = await createNewUser(uid, decodedToken.email ?? "");
   }
 
   return new NextResponse(JSON.stringify(details), {
@@ -29,6 +31,5 @@ export const GET = async function () {
       "Content-Type": "application/json",
     },
   });
-
 };
 

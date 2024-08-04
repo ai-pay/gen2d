@@ -1,68 +1,56 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { GenerateImageRequest } from "../../types/generateImageRequest";
-import { useGenerateImage } from "../../services/useGenerateImage";
-import { GeneratePromptInput } from "./promptInput";
-import { useUserSettingsStore } from "@/store/userSettings";
-import { AboveInputLogin } from "./aboveInputLogin";
-import { SessionProvider } from "next-auth/react";
+import { AboveInputAiPayButton } from "./aboveInputAiPayButton";
 import { AdvancedModelSelection } from "./advancedFeaturesInput";
+import { DisplayGenerations } from "./displayGenerations";
+import { GenerateImageRequest } from "../../types/generateImageRequest";
+import { GeneratePromptInput } from "./promptInput";
+import { useGenerateImage } from "../../services/useGenerateImage";
+import { useState } from "react";
 
 export function GenerationInput({
+  uid,
   defaultModelDetails,
   defaultPrompt,
 }: {
+  uid: string | undefined
   defaultModelDetails: string | undefined
   defaultPrompt: string | undefined
 }) {
-  const [ modelDetails, setModelDetails ] = useState<GenerateImageRequest["modelDetails"]>(defaultModelDetails ? JSON.parse(defaultModelDetails) : {
+  const [modelDetails, setModelDetails] = useState<GenerateImageRequest["modelDetails"]>(defaultModelDetails ? JSON.parse(defaultModelDetails) : {
     model: "dall-e-3",
     quality: "standard",
-    style: "vivid"
+    style: "vivid",
   });
-  
+
   const {
     loading,
-    imageResponse,
+    imageGenerations,
     generateImage,
   } = useGenerateImage();
 
-  useEffect(() => { 
-    (async () => {
-      const res = await fetch("/api/user/freeGenerations");
-      const { freeGenerations } = await res.json() as {freeGenerations: number};
-      if (freeGenerations !== undefined){
-        useUserSettingsStore.getState().setFreeGenerations(freeGenerations);
-      }
-    })();
-  }, [imageResponse?.imageUrl]);
+  return <div
+    className="w-full flex flex-col justify-center items-center my-24 gap-24">
+    <div
+      className="relative flex flex-col  gap-3 justify-center w-[80vw] sm:w-[512px]">
 
-  return <div className="flex py-[10vh] my-12 justify-center items-center">
-    <div className="relative flex flex-col gap-3 justify-center w-[80vw] sm:w-[512px]">
+      <AboveInputAiPayButton
+        uid={uid} />
 
-      <SessionProvider>
-        <AboveInputLogin />
-      </SessionProvider>
-      
-      <GeneratePromptInput 
-        defaultPrompt={defaultPrompt} 
-        loading={loading} 
-        generateImage={function (prompt: string): void {
+      <GeneratePromptInput
+        defaultPrompt={defaultPrompt}
+        loading={loading}
+        generateImage={function(prompt: string): void {
           generateImage(modelDetails, prompt);
-        } } >
+        } } />
 
-        <AdvancedModelSelection modelDetails={modelDetails} setModelDetails={setModelDetails} />
-      </GeneratePromptInput>
+      <AdvancedModelSelection
+        modelDetails={modelDetails}
+        setModelDetails={setModelDetails} />
 
-      {imageResponse && <Link 
-        href={"/img/" + imageResponse.imageId}
-        className="flex flex-col gap-2 group cursor-pointer ">
-        <Image src={imageResponse.imageUrl} width={1024} height={1024} alt={imageResponse.prompt} className="rounded-md w-3/5 mx-auto" />
-        <div className="text-sm break-words bg-neutral-200/60 p-3 rounded-md">{imageResponse.prompt}</div>
-      </Link>}
     </div>
+    <DisplayGenerations
+      generations={imageGenerations}
+    />
   </div>;
 }

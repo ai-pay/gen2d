@@ -1,44 +1,72 @@
 import { Dalle3ModelDetails } from "../../../types/generateImageRequest";
-import { DropDown } from "../../ui/dropDown";
-import { Label } from "../../ui/label";
-
-
+import { Select, SelectItem } from "@nextui-org/react";
 
 export function AdvancedFeatureInputDalle3({
   modelDetails,
   setDetails,
 }: {
-    modelDetails: Dalle3ModelDetails;
-    setDetails: (details: Dalle3ModelDetails) => void;
+  modelDetails: Dalle3ModelDetails;
+  setDetails: (details: Dalle3ModelDetails) => void;
 }) {
   return <>
-    <div className="grid grid-cols-3 items-center gap-3">
-      <Label htmlFor="quality">Quality</Label>
-      <DropDown 
-        value={modelDetails.quality} 
-        options={{
-          standard: "Standard",
-          hd: "HD"
-        }} setValue={function (newVal): void {
-          setDetails({
-            ...modelDetails,
-            quality: newVal
-          });
-        } } />
-    </div>
-    <div className="grid grid-cols-3 items-center gap-3">
-      <Label htmlFor="style">Style</Label>
-      <DropDown 
-        value={modelDetails.style} 
-        options={{
-          vivid: "Vivid",
-          natural: "Natural"
-        }} setValue={function (newVal): void {
-          setDetails({
-            ...modelDetails,
-            style: newVal
-          });
-        } } />
-    </div>
+    <Select
+      variant="bordered"
+      items={[
+        {
+          key: "standard",
+          label: "Standard",
+        },
+        {
+          key: "hd",
+          label: "HD",
+        },
+      ]}
+      label="Quality"
+      selectionMode="single"
+      selectedKeys={[modelDetails.quality]}
+      onSelectionChange={(newVal) => {
+        if (newVal === "all" || newVal.size === 0) {
+          return;
+        }
+        setDetails({
+          ...modelDetails,
+          quality: newVal.keys().next().value as "standard" | "hd",
+        });
+      }}
+    >
+      {(item) => <SelectItem
+        key={item.key}>{item.label}</SelectItem>}
+
+    </Select>
+
+    <Select
+      variant="bordered"
+      items={[
+        {
+          key: "vivid",
+          label: "Vivid",
+        }, {
+          key: "natural",
+          label: "Natural",
+        },
+      ]}
+      label="Style"
+      selectionMode="single"
+      selectedKeys={[modelDetails.style]}
+      onSelectionChange={(newVal) => {
+        if (newVal === "all" || newVal.size === 0) {
+          return;
+        }
+        setDetails({
+          ...modelDetails,
+          style: newVal.keys().next().value as "vivid" | "natural",
+        });
+      }}
+    >
+      {(item) => <SelectItem
+        key={item.key}>{item.label}
+      </SelectItem>}
+
+    </Select>
   </>;
 }

@@ -1,0 +1,8 @@
+{
+    "crons": [
+      {
+        "path": "/api/cron/update-related-images",
+        "schedule": "*/5 * * * *"
+      }
+    ]
+  }

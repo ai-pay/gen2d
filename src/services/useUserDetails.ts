@@ -1,20 +1,14 @@
-import { useUserSettingsStore } from "@/store/userSettings";
 import { UserDetails } from "@/types/userDetails";
-import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useUserSettingsStore } from "@/store/userSettings";
 
 export function useUserDetails() {
-  const {
-    status
-  } = useSession();
-
   const setUserImageIds = useUserSettingsStore((state) => state.setUserImageIds);
   const setProfileImageId = useUserSettingsStore((state) => state.setProfileImageId);
 
-
   const {
-    data
+    data,
   } = useQuery({
     queryKey: ["userDetails"],
     queryFn: async () => {
@@ -31,7 +25,6 @@ export function useUserDetails() {
   }, [data, setUserImageIds, setProfileImageId]);
 
   return {
-    status,
     ...data,
   };
 }
