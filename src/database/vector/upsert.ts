@@ -1,7 +1,7 @@
 import { Metadata, index } from "./client";
 import { getEmbeddings } from "./getEmbeddings";
 
-export async function upsertImage(imageId: string, metadata: Metadata, uid: string) {
+export async function upsertImage(imageId: string, metadata: Metadata, uid?: string) {
   const vector = await getEmbeddings(metadata.prompt, uid);
 
   if (!vector) {

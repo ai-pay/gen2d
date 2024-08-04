@@ -1,4 +1,4 @@
-import { DisplayImage } from "./list";
+import { DisplayImage } from "./displayImage";
 import {
   useCallback, useEffect, useRef, useState
 } from "react";
