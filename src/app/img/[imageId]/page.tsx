@@ -11,7 +11,6 @@ import { generateImageUrl, imageSizeVariants } from "../../../database/cloudflar
 import { redirect } from "next/navigation";
 import CloneIcon from "@heroicons/react/24/outline/BeakerIcon";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
 import LinkExternal from "@heroicons/react/24/outline/ArrowTopRightOnSquareIcon";
 
@@ -129,9 +128,7 @@ export default async function Home({
           href={imageUrl}
           target="_blank"
           rel="noopener noreferrer">
-          <Image
-            width={1024}
-            height={1024}
+          <img
             src={imageUrl}
             alt={imageDetails?.prompt ?? ""} />
         </Link>
