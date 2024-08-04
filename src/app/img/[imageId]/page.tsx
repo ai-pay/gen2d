@@ -10,7 +10,6 @@ import { fetchImageDetails } from "../../../database/redis/imageDetails/fetchIma
 import { generateImageUrl, imageSizeVariants } from "../../../database/cloudflare/generateImageUrl";
 import { redirect } from "next/navigation";
 import CloneIcon from "@heroicons/react/24/outline/BeakerIcon";
-import Head from "next/head";
 import Link from "next/link";
 import LinkExternal from "@heroicons/react/24/outline/ArrowTopRightOnSquareIcon";
 
@@ -52,6 +51,9 @@ export async function generateMetadata({
   return {
     title: "Image Details",
     description: imageDetails?.prompt ?? "AI - Generated Image",
+    alternates: {
+      canonical: `https://www.gen2d.dev/img/${params.imageId}`,
+    },
     openGraph: {
       title: "GEN2D - AI Image Generation",
       description: `GEN2D, Prompt: ${imageDetails?.prompt}`,
@@ -83,11 +85,6 @@ export default async function Home({
 
   return <div
     className="flex flex-col gap-0 min-h-screen">
-    <Head>
-      <link
-        rel="canonical"
-        href={`https://www.gen2d.dev/img/${params.imageId}`} />
-    </Head>
     <MainHeader />
     <main
       className="flex flex-col gap-3 container pb-8">

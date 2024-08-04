@@ -1,9 +1,15 @@
 import { DisplayImages } from "@/components/displayImages";
 import { GenerationInput } from "@/components/generationInput";
 import { MainHeader } from "@/components/header";
+import { Metadata } from "next";
 import { fetchRecentImageIds } from "@/database/redis/recentImageIds/fetchRecentImageIds";
 import { getFirebaseServerDecodedToken } from "@/utils/firebase/getServerToken";
-import Head from "next/head";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://www.gen2d.dev",
+  },
+};
 
 export default async function Home({
   searchParams,
@@ -15,11 +21,6 @@ export default async function Home({
   const initialImageIds = await fetchRecentImageIds();
 
   return <>
-    <Head>
-      <link
-        rel="canonical"
-        href="https://www.gen2d.dev" />
-    </Head>
     <MainHeader />
     <main
       className="flex min-h-screen flex-col items-center justify-between">
