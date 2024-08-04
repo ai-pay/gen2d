@@ -4,7 +4,7 @@ import {
 } from "react";
 
 export function useVisibleImageIds() {
-  const [maxIndex, setMaxIndex] = useState<number>(20);
+  const [maxIndex, setMaxIndex] = useState<number>(100);
 
   const handleScroll = useCallback(() => {
     setMaxIndex((prevVisibleImageIds) => {
