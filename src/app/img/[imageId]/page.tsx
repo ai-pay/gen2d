@@ -1,5 +1,6 @@
 
 import { CopyButton } from "./copyButton";
+import { DisplayImage } from "@/components/displayImages/displayImage";
 import { IconButtonStyles } from "./iconStyles";
 import { MainHeader } from "../../../components/header";
 import { Metadata } from "next";
@@ -90,47 +91,51 @@ export default async function Home({
     </Head>
     <MainHeader />
     <main
-      className="grid grid-cols-1 sm:grid-cols-2 gap-3 container pb-8">
+      className="flex flex-col gap-3 container pb-8">
       <div
-        className="flex flex-col gap-3 my-auto">
+        className="flex flex-col sm:flex-row gap-3">
+
         <div
-          className="flex flex-col gap-0">
-          <h2
-            className="text-lg font-bold pt-5">Image variants:</h2>
-          <p
-            className="text-sm">(You can put this image anywhere you&apos;d like or put these links in your website)</p>
-        </div>
-        {imageSizeVariants.map((variant) => {
-          return <div
-            key={variant}
-            className="group flex text-sm font-bold text-wrap break-words bg-neutral-200/60 justify-between items-center p-1.5 pl-5 rounded-md">
+          className="flex flex-col gap-3 my-auto">
+          <div
+            className="flex flex-col gap-0">
+            <h2
+              className="text-lg font-bold pt-5">Image variants:</h2>
             <p
-              className="overflow-x-scroll whitespace-nowrap py-2">{generateImageUrl(params.imageId, variant)}</p>
-            <div
-              className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
-              <IconLink
-                href={generateImageUrl(params.imageId, variant)}
-              >
-                <LinkExternal
-                  className="w-5 h-5" />
-              </IconLink>
-              <CopyButton
-                copyText={generateImageUrl(params.imageId, variant)} />
-            </div>
-          </div>;
-        })}
+              className="text-sm">(You can put this image anywhere you&apos;d like or put these links in your website)</p>
+          </div>
+          {imageSizeVariants.map((variant) => {
+            return <div
+              key={variant}
+              className="group flex text-sm font-bold text-wrap break-words bg-neutral-200/60 justify-between items-center p-1.5 pl-5 rounded-md">
+              <p
+                className="overflow-x-scroll whitespace-nowrap py-2">{generateImageUrl(params.imageId, variant)}</p>
+              <div
+                className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <IconLink
+                  href={generateImageUrl(params.imageId, variant)}
+                >
+                  <LinkExternal
+                    className="w-5 h-5" />
+                </IconLink>
+                <CopyButton
+                  copyText={generateImageUrl(params.imageId, variant)} />
+              </div>
+            </div>;
+          })}
+        </div>
+        <Link
+          className="rounded-md m-auto overflow-hidden"
+          href={imageUrl}
+          target="_blank"
+          rel="noopener noreferrer">
+          <Image
+            width={1024}
+            height={1024}
+            src={imageUrl}
+            alt={imageDetails?.prompt ?? ""} />
+        </Link>
       </div>
-      <Link
-        className="rounded-md m-auto overflow-hidden"
-        href={imageUrl}
-        target="_blank"
-        rel="noopener noreferrer">
-        <Image
-          width={1024}
-          height={1024}
-          src={imageUrl}
-          alt={imageDetails?.prompt ?? ""} />
-      </Link>
 
       <div
         className="relative col-span-1 sm:col-span-2 flex flex-col gap-3 bg-neutral-200/60 p-3 pt-9 rounded-md overflow-y-scroll group">
@@ -164,6 +169,27 @@ export default async function Home({
           })}
         </div>
       </div>
+
+      {imageDetails.relatedImageIds && imageDetails.relatedImageIds.length > 0 &&
+      <div
+        className="relative col-span-1 sm:col-span-2 flex flex-col gap-3 bg-neutral-200/60 p-3 pt-9 rounded-md overflow-y-scroll group">
+        <h2
+          className="text-lg font-bold">Related Images:</h2>
+
+        <ul
+          className="grid grid-cols-[repeat(auto-fit,_minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fit,_minmax(180px,1fr))] gap-3">
+          {imageDetails.relatedImageIds.map((imageId, index) => (
+            <li
+              key={`${index}-${imageId}`}
+              className="w-full aspect-square">
+              <DisplayImage
+                imageId={imageId} />
+            </li>
+          ))}
+        </ul>
+
+      </div>
+      }
     </main>
   </div>;
 }
