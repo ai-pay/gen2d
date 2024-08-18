@@ -7,8 +7,10 @@ import { addImageDetails } from "../../../../database/redis/imageDetails/addImag
 import { addImageId } from "../../../../database/redis/recentImageIds/addImageId";
 import { generateImageId } from "../../../../utils/generateImageId";
 import { generateImageRequest } from "../../../../types/generateImageRequest";
+import { getEmbeddings } from "@/database/vector/getEmbeddings";
 import { getFirebaseServerDecodedToken } from "@/utils/firebase/getServerToken";
 import { imageGeneration } from "ai-pay";
+import { queryVector } from "@/database/vector/queryVector";
 import { redis } from "../../../../database/redis/redisClient";
 import { setUserImage } from "../../../../database/redis/userDetails/setUserImage";
 import { uploadImage } from "../../../../database/cloudflare/uploadImage";
@@ -101,6 +103,7 @@ export const POST = async function(req: NextRequest) {
 
       return new NextResponse(JSON.stringify({
         error: "Failed to generate image",
+        ...res,
       }), {
         status: 500,
         headers: {
@@ -116,6 +119,7 @@ export const POST = async function(req: NextRequest) {
 
       return new NextResponse(JSON.stringify({
         error: "Failed to generate image",
+        ...res,
       }), {
         status: 500,
         headers: {
@@ -134,6 +138,10 @@ export const POST = async function(req: NextRequest) {
 
     await addImageId(imageId, pipeline);
 
+    const embedding = await getEmbeddings(prompt, uid);
+
+    const similarImages = embedding ? await queryVector(embedding, 20) : [];
+
     await addImageDetails(imageId, {
       createdAt: Date.now(),
       sizeVariants: imageSizeVariants as unknown as ImageSizeVariant[],
@@ -145,6 +153,7 @@ export const POST = async function(req: NextRequest) {
       ownerId: uid,
       likes: [],
       dislikes: [],
+      relatedImageIds: similarImages.map((image) => image.id as string),
     }, pipeline);
 
     if (uid) {

@@ -6,6 +6,7 @@ import { MainHeader } from "../../../components/header";
 import { Metadata } from "next";
 import { SetProfileIconIdButton } from "./setProfileIconIdButton";
 import { Tooltip } from "@nextui-org/react";
+import { cache } from "react";
 import { fetchImageDetails } from "../../../database/redis/imageDetails/fetchImageDetails";
 import { generateImageUrl, imageSizeVariants } from "../../../database/cloudflare/generateImageUrl";
 import { redirect } from "next/navigation";
@@ -43,10 +44,14 @@ function IconLink({
   </Tooltip>;
 }
 
+const cacheImageDetails = cache(async (imageId: string) => {
+  return await fetchImageDetails(imageId);
+});
+
 export async function generateMetadata({
   params,
 }: { params: { imageId: string } }): Promise<Metadata> {
-  const imageDetails = await fetchImageDetails(params.imageId);
+  const imageDetails = await cacheImageDetails(params.imageId);
 
   return {
     title: "Image Details",
@@ -77,7 +82,7 @@ export default async function Home({
   params,
 }: { params: { imageId: string } }) {
   const imageUrl = generateImageUrl(params.imageId, "1024");
-  const imageDetails = await fetchImageDetails(params.imageId);
+  const imageDetails = await cacheImageDetails(params.imageId);
 
   if (!imageDetails) {
     redirect("/");
@@ -152,6 +157,13 @@ export default async function Home({
           className="text-lg font-bold">Prompt:</h2>
         <h1
           className="text-base font-bold text-wrap break-words bg-neutral-200 p-3 rounded-md">{imageDetails?.prompt ?? ""}</h1>
+
+        {imageDetails.revisedPrompt && <>
+          <h2
+            className="text-lg font-bold pt-5">Revised Prompt:</h2>
+          <h1
+            className="text-base font-bold text-wrap break-words bg-neutral-200 p-3 rounded-md">{imageDetails.revisedPrompt}</h1>
+        </>}
 
         <h2
           className="text-lg font-bold pt-5">Model Details:</h2>
