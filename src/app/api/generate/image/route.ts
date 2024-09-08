@@ -69,12 +69,21 @@ export const POST = async function(req: NextRequest) {
     const imgGenModelDetails = ((): ImageGenerationRequest["modelDetails"] => {
       switch (modelDetails.model) {
         // TODO: allow stability-image-ultra
+        case "stability-ai-ultra": {
+          return {
+            model: "stability-image-ultra",
+            prompt,
+            aspect_ratio: "1:1",
+            negative_prompt: modelDetails.negative_prompt,
+          };
+        }
         case "stability-ai-core": {
           return {
             model: "stability-image-core",
             prompt,
             aspect_ratio: "1:1",
             style_preset: "cinematic", // TODO: make this configurable
+            negative_prompt: modelDetails.negative_prompt,
           };
         }
         case "dall-e-3": {

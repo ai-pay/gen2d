@@ -13,6 +13,7 @@ import { ChevronDown } from "lucide-react";
 import { GenerateImageRequest } from "../../../types/generateImageRequest";
 
 const options: Record<string, string> = {
+  "stability-ai-ultra": "Stability AI Ultra",
   "stability-ai-core": "Stability AI Core",
   "dall-e-3": "Dalle-3",
 };
@@ -50,6 +51,12 @@ export function AdvancedModelSelection({
             const key = selected.keys().next().value as GenerateImageRequest["modelDetails"]["model"] || "dall-e-3";
 
             switch (key) {
+              case "stability-ai-ultra":
+                setModelDetails({
+                  model: "stability-ai-ultra",
+                  negative_prompt: "",
+                });
+                break;
               case "stability-ai-core":
                 setModelDetails({
                   model: "stability-ai-core",
@@ -84,6 +91,10 @@ export function AdvancedModelSelection({
 
       <AccordionContent
         className="grid gap-3 pt-3">
+        {modelDetails.model === "stability-ai-ultra" && <AdvancedFeatureInputStabilityCore
+          modelDetails={modelDetails}
+          setDetails={setModelDetails} />}
+
         {modelDetails.model === "stability-ai-core" && <AdvancedFeatureInputStabilityCore
           modelDetails={modelDetails}
           setDetails={setModelDetails} />}

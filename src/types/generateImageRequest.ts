@@ -10,7 +10,7 @@ export const dalle3ModelDetails = z.object({
 export type Dalle3ModelDetails = z.infer<typeof dalle3ModelDetails>;
 
 export const stabilityAICoreModelDetails = z.object({
-  model: z.enum(["stability-ai-core"]),
+  model: z.enum(["stability-ai-core", "stability-ai-ultra"]),
   negative_prompt: z.optional(z.string()),
 });
 export type StabilityAICoreModelDetails = z.infer<typeof stabilityAICoreModelDetails>;
