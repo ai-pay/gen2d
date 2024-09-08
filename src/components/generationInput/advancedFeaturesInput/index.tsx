@@ -5,7 +5,7 @@ import {
   Accordion, AccordionContent, AccordionItem
 } from "@/components/ui/accordion";
 import { AdvancedFeatureInputDalle3 } from "./dalle3";
-import { AdvancedFeatureInputStabilityCore } from "./stability";
+import { AdvancedFeatureInputStabilityCore, AdvancedFeatureInputStabilityUltra } from "./stability";
 import {
   Button, Select, SelectItem
 } from "@nextui-org/react";
@@ -61,6 +61,7 @@ export function AdvancedModelSelection({
                 setModelDetails({
                   model: "stability-ai-core",
                   negative_prompt: "",
+                  style: "cinematic",
                 });
                 break;
               case "dall-e-3":
@@ -91,7 +92,7 @@ export function AdvancedModelSelection({
 
       <AccordionContent
         className="grid gap-3 pt-3">
-        {modelDetails.model === "stability-ai-ultra" && <AdvancedFeatureInputStabilityCore
+        {modelDetails.model === "stability-ai-ultra" && <AdvancedFeatureInputStabilityUltra
           modelDetails={modelDetails}
           setDetails={setModelDetails} />}
 

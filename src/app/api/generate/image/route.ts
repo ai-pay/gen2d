@@ -82,7 +82,7 @@ export const POST = async function(req: NextRequest) {
             model: "stability-image-core",
             prompt,
             aspect_ratio: "1:1",
-            style_preset: "cinematic", // TODO: make this configurable
+            style_preset: modelDetails.style,
             negative_prompt: modelDetails.negative_prompt,
           };
         }

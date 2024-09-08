@@ -9,16 +9,29 @@ export const dalle3ModelDetails = z.object({
 });
 export type Dalle3ModelDetails = z.infer<typeof dalle3ModelDetails>;
 
-export const stabilityAICoreModelDetails = z.object({
-  model: z.enum(["stability-ai-core", "stability-ai-ultra"]),
+export const stabilityAIUltraModelDetails = z.object({
+  model: z.enum(["stability-ai-ultra"]),
   negative_prompt: z.optional(z.string()),
 });
+
+export type StabilityAIUltraModelDetails = z.infer<typeof stabilityAIUltraModelDetails>;
+
+export const stabilityAiCoreStyles = ["3d-model", "analog-film", "anime", "cinematic", "comic-book", "digital-art", "enhance", "fantasy-art", "isometric", "line-art", "low-poly", "modeling-compound", "neon-punk", "origami", "photographic", "pixel-art", "tile-texture"] as const;
+export type StabilityAiCoreStyles = typeof stabilityAiCoreStyles[number];
+
+export const stabilityAICoreModelDetails = z.object({
+  model: z.enum(["stability-ai-core"]),
+  negative_prompt: z.optional(z.string()),
+  style: z.enum(["3d-model", "analog-film", "anime", "cinematic", "comic-book", "digital-art", "enhance", "fantasy-art", "isometric", "line-art", "low-poly", "modeling-compound", "neon-punk", "origami", "photographic", "pixel-art", "tile-texture"]),
+});
+
 export type StabilityAICoreModelDetails = z.infer<typeof stabilityAICoreModelDetails>;
 
 export const generateImageRequest = z.object({
   prompt: z.string().min(1),
   modelDetails: z.union([
     dalle3ModelDetails,
+    stabilityAIUltraModelDetails,
     stabilityAICoreModelDetails,
   ]),
 });
