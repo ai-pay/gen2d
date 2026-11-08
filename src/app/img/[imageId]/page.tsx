@@ -50,24 +50,25 @@ const cacheImageDetails = cache(async (imageId: string) => {
 
 export async function generateMetadata({
   params,
-}: { params: { imageId: string } }): Promise<Metadata> {
-  const imageDetails = await cacheImageDetails(params.imageId);
+}: { params: Promise<{ imageId: string }> }): Promise<Metadata> {
+  const imageId = (await params).imageId;
+  const imageDetails = await cacheImageDetails(imageId);
 
   return {
     title: "Image Details",
     description: imageDetails?.prompt ?? "AI - Generated Image",
     alternates: {
-      canonical: `https://www.gen2d.dev/img/${params.imageId}`,
+      canonical: `https://www.gen2d.dev/img/${imageId}`,
     },
     openGraph: {
       title: "GEN2D - AI Image Generation",
       description: `GEN2D, Prompt: ${imageDetails?.prompt}`,
-      url: `https://www.gen2d.dev/img/${params.imageId}`,
+      url: `https://www.gen2d.dev/img/${imageId}`,
       type: "website",
       siteName: "GEN2D",
       images: [
         {
-          url: generateImageUrl(params.imageId, "1024"),
+          url: generateImageUrl(imageId, "1024"),
           type: "image/jpeg",
           width: 1024,
           height: 1024,
@@ -80,9 +81,10 @@ export async function generateMetadata({
 
 export default async function Home({
   params,
-}: { params: { imageId: string } }) {
-  const imageUrl = generateImageUrl(params.imageId, "1024");
-  const imageDetails = await cacheImageDetails(params.imageId);
+}: { params: Promise<{ imageId: string }> }) {
+  const imageId = (await params).imageId;
+  const imageUrl = generateImageUrl(imageId, "1024");
+  const imageDetails = await cacheImageDetails(imageId);
 
   if (!imageDetails) {
     redirect("/");
@@ -110,17 +112,17 @@ export default async function Home({
               key={variant}
               className="group flex text-sm font-bold text-wrap break-words bg-neutral-200/60 justify-between items-center p-1.5 pl-5 rounded-md">
               <p
-                className="overflow-x-scroll whitespace-nowrap py-2">{generateImageUrl(params.imageId, variant)}</p>
+                className="overflow-x-scroll whitespace-nowrap py-2">{generateImageUrl(imageId, variant)}</p>
               <div
                 className="flex gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                 <IconLink
-                  href={generateImageUrl(params.imageId, variant)}
+                  href={generateImageUrl(imageId, variant)}
                 >
                   <LinkExternal
                     className="w-5 h-5" />
                 </IconLink>
                 <CopyButton
-                  copyText={generateImageUrl(params.imageId, variant)} />
+                  copyText={generateImageUrl(imageId, variant)} />
               </div>
             </div>;
           })}
@@ -141,7 +143,7 @@ export default async function Home({
         <div
           className="absolute top-3 right-3 flex flex-row justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
           <SetProfileIconIdButton
-            imageId={params.imageId} />
+            imageId={imageId} />
 
           <IconLink
             tooltip="Clone the prompt and model details"

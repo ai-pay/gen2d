@@ -14,8 +14,9 @@ export const metadata: Metadata = {
 export default async function Home({
   searchParams,
 } : {
-  searchParams: { [key: string]: string }
+  searchParams: Promise<{ [key: string]: string }>
 }) {
+  const resolvedSearchParams = await searchParams;
   const decodedToken = await getFirebaseServerDecodedToken();
 
   const initialImageIds = await fetchRecentImageIds();
@@ -26,8 +27,8 @@ export default async function Home({
       className="flex min-h-screen flex-col items-center justify-between">
       <GenerationInput
         uid={decodedToken?.uid}
-        defaultModelDetails={searchParams["modelDetails"]}
-        defaultPrompt={searchParams["prompt"]}
+        defaultModelDetails={resolvedSearchParams["modelDetails"]}
+        defaultPrompt={resolvedSearchParams["prompt"]}
       />
       <DisplayImages
         initialImageIds={initialImageIds} />

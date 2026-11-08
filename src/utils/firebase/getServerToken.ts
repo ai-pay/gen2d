@@ -17,7 +17,7 @@ export const firebaseEdgePrivateConfig = {
 export async function getFirebaseServerToken() {
   "use server";
 
-  return getTokens(cookies(), firebaseEdgePrivateConfig);
+  return getTokens(await cookies(), firebaseEdgePrivateConfig);
 }
 
 export type FirebaseServerDecodedToken = {
